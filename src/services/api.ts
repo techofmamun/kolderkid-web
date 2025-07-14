@@ -35,6 +35,19 @@ export interface ApparelItem {
   image: string[];
 }
 
+export interface Item {
+  id: number;
+  display_title?: string;
+  artist_name?: string;
+  description?: string;
+  category_id?: number;
+  thumbnail?: string;
+  fileType?: string;
+  product_name?: string;
+  product_description?: string;
+  image?: string[];
+}
+
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -75,23 +88,28 @@ export const api = createApi({
     }),
     getBanner: builder.query<Banner[] | null, void>({
       query: () => "getbanner",
-      transformResponse: (response: { data: Banner[] }) => response.data || null,
+      transformResponse: (response: { data: Banner[] }) =>
+        response.data || null,
     }),
     getMusic: builder.query<MediaItem[], void>({
       query: () => "getitems?filter=1&page=1",
-      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+      transformResponse: (response: { data: MediaItem[] }) =>
+        response.data || [],
     }),
     getVideos: builder.query<MediaItem[], void>({
       query: () => "getitems?filter=2&page=1",
-      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+      transformResponse: (response: { data: MediaItem[] }) =>
+        response.data || [],
     }),
     getPodcasts: builder.query<MediaItem[], void>({
       query: () => "getitems?filter=3&page=1",
-      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+      transformResponse: (response: { data: MediaItem[] }) =>
+        response.data || [],
     }),
     getApparels: builder.query<ApparelItem[], void>({
       query: () => "getitems?filter=4&page=1",
-      transformResponse: (response: { data: ApparelItem[] }) => response.data || [],
+      transformResponse: (response: { data: ApparelItem[] }) =>
+        response.data || [],
     }),
   }),
 });
