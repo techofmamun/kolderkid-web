@@ -11,6 +11,7 @@ Migrated from React Native to a modern web stack (Vite, React, TypeScript, Tailw
 - Main dashboard (Home) with horizontally scrollable sections for Music, Videos, Podcasts, Apparels
 - API integration via RTK Query
 - Responsive UI using Tailwind CSS
+- Audio Player Screen with basic controls
 
 ## What’s Next
 - Migrate and polish remaining screens from the original app
