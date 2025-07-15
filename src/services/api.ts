@@ -26,6 +26,11 @@ export interface MediaItem {
   category_id: number;
   thumbnail: string;
   fileType: string;
+  file?: string;
+  favourite?: boolean;
+  subscription?: boolean;
+  is_download?: boolean;
+  price?: number;
 }
 
 export interface ApparelItem {
@@ -93,8 +98,25 @@ export const api = createApi({
     }),
     getMusic: builder.query<MediaItem[], void>({
       query: () => "getitems?filter=1&page=1",
-      transformResponse: (response: { data: MediaItem[] }) =>
-        response.data || [],
+      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+    }),
+    getAudioDetails: builder.query<MediaItem | null, { filter: number; id: number }>({
+      query: ({ filter, id }) => `getitemsdetails?filter=${filter}&items_id=${id}`,
+      transformResponse: (response: { data: MediaItem[] }) => response.data?.[0] || null,
+    }),
+    likeAudio: builder.mutation<{ status: boolean }, { filter: number; id: number }>({
+      query: ({ filter, id }) => ({
+        url: "like",
+        method: "POST",
+        body: { type_of_item: filter, item_id: id },
+      }),
+    }),
+    downloadAudio: builder.mutation<{ status: boolean; message: string }, { id: number }>({
+      query: ({ id }) => ({
+        url: "download",
+        method: "POST",
+        body: { items_id: id },
+      }),
     }),
     getVideos: builder.query<MediaItem[], void>({
       query: () => "getitems?filter=2&page=1",
@@ -123,4 +145,7 @@ export const {
   useGetVideosQuery,
   useGetPodcastsQuery,
   useGetApparelsQuery,
+  useGetAudioDetailsQuery,
+  useLikeAudioMutation,
+  useDownloadAudioMutation,
 } = api;
