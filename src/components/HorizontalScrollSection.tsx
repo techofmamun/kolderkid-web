@@ -63,7 +63,7 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-2 shadow"
+        className="flex gap-4 overflow-x-auto pb-2"
         style={{
           scrollBehavior: "smooth",
           scrollbarWidth: "none",

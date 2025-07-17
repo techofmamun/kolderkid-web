@@ -38,7 +38,7 @@ const ProtectedLayout: React.FC = () => (
     <div className="flex min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-200">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-y-auto h-screen">
-        <main className="flex-1 p-4">
+        <main className="flex-1">
           <Outlet />
         </main>
       </div>

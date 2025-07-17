@@ -133,6 +133,12 @@ export const api = createApi({
       transformResponse: (response: { data: ApparelItem[] }) =>
         response.data || [],
     }),
+
+    // Related audios endpoint (example: returns similar items by category or artist)
+    getRelatedAudios: builder.query<MediaItem[], { id: number }>({
+      query: ({ id }) => `getrelateditems?items_id=${id}`,
+      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+    }),
   }),
 });
 
@@ -148,4 +154,5 @@ export const {
   useGetAudioDetailsQuery,
   useLikeAudioMutation,
   useDownloadAudioMutation,
+  useGetRelatedAudiosQuery,
 } = api;
