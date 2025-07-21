@@ -135,9 +135,9 @@ const Home: React.FC = () => {
         />
 
         {/* Example Button */}
-        <div className="flex justify-center mt-8">
+        {/* <div className="flex justify-center mt-8">
           <Button text="Explore More" />
-        </div>
+        </div> */}
       </div>
     </div>
   );

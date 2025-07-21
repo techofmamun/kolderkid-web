@@ -1,6 +1,8 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import logo from "/assets/images/kolderkid-logo.png"; // Update path if needed
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../hooks";
+import { api } from "../services/api";
+import logo from "/assets/images/kolderkid-logo.png"; 
 import ProfileSidebarSection from "./ProfileSidebarSection";
 import {
   FaUserCircle,
@@ -77,6 +79,18 @@ const navItems = [
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      dispatch(api.util.resetApiState());
+      navigate("/auth/login", { replace: true });
+    }
+  };
+
   return (
     <aside className="w-64 bg-white shadow-lg min-h-screen p-6 flex flex-col items-center relative">
       {/* branding */}
@@ -97,30 +111,56 @@ const Sidebar: React.FC = () => {
           <ul className="space-y-2">
             {navItems.map((item) => (
               <li key={item.name}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
-                    location.pathname === item.path
-                      ? "bg-sky-100 text-sky-700  border-sky-500"
-                      : "text-gray-700 hover:bg-sky-50 border-transparent"
-                  }`}
-                  style={{
-                    WebkitTransition: "background 0.3s, color 0.3s",
-                    transition: "background 0.3s, color 0.3s",
-                  }}
-                >
-                  {React.cloneElement(item.icon, {
-                    className: `text-xl mr-3 transition-all duration-300 ease-in-out ${
+                {item.name === "Logout" ? (
+                  <a
+                    href="#logout"
+                    onClick={handleLogout}
+                    className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
                       location.pathname === item.path
-                        ? "text-sky-600"
-                        : "text-sky-400"
-                    }`,
-                  })}
-                  <span>{item.name}</span>
-                  {item.name === "Logout" && (
+                        ? "bg-sky-100 text-sky-700  border-sky-500"
+                        : "text-gray-700 hover:bg-sky-50 border-transparent"
+                    }`}
+                    style={{
+                      WebkitTransition: "background 0.3s, color 0.3s",
+                      transition: "background 0.3s, color 0.3s",
+                    }}
+                  >
+                    {React.cloneElement(item.icon, {
+                      className: `text-xl mr-3 transition-all duration-300 ease-in-out ${
+                        location.pathname === item.path
+                          ? "text-sky-600"
+                          : "text-sky-400"
+                      }`,
+                    })}
+                    <span>{item.name}</span>
                     <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />
-                  )}
-                </Link>
+                  </a>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
+                      location.pathname === item.path
+                        ? "bg-sky-100 text-sky-700  border-sky-500"
+                        : "text-gray-700 hover:bg-sky-50 border-transparent"
+                    }`}
+                    style={{
+                      WebkitTransition: "background 0.3s, color 0.3s",
+                      transition: "background 0.3s, color 0.3s",
+                    }}
+                  >
+                    {React.cloneElement(item.icon, {
+                      className: `text-xl mr-3 transition-all duration-300 ease-in-out ${
+                        location.pathname === item.path
+                          ? "text-sky-600"
+                          : "text-sky-400"
+                      }`,
+                    })}
+                    <span>{item.name}</span>
+                    {item.name === "Logout" && (
+                      <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />
+                    )}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
