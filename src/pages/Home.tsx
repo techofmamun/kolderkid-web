@@ -5,7 +5,7 @@ import {
   useGetBannerQuery,
   useGetMusicQuery,
   useGetPodcastsQuery,
-  useGetVideosQuery
+  useGetVideosQuery,
 } from "../services/api";
 
 const Home: React.FC = () => {
@@ -21,7 +21,9 @@ const Home: React.FC = () => {
         {/* Banner */}
         <div className="w-full h-48 bg-sky-300 rounded-xl flex items-center justify-center mb-8">
           {loadingBanner ? (
-            <div className="text-sky-900 text-2xl font-bold">Loading Banner...</div>
+            <div className="text-sky-900 text-2xl font-bold">
+              Loading Banner...
+            </div>
           ) : banners && banners.length ? (
             <img
               src={banners[0].bannerImage}
@@ -39,16 +41,20 @@ const Home: React.FC = () => {
           items={musicData || []}
           loading={!musicData}
           emptyText="No Music"
-          detailsPath={item => `/music/${item.id}`}
-          renderItem={item => (
-            <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px]">
-              <img
+          detailsPath={(item) => `/music/${item.id}`}
+          renderItem={(item) => (
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px] justify-between">
+              <img 
                 src={item.thumbnail}
                 alt={item.display_title}
-                className="w-16 h-16 rounded-full mb-2 object-cover"
+                className="w-16 h-16 rounded-full mb-2 object-cover line-clamp-1"
               />
-              <div className="text-sky-700 font-medium text-center">{item.display_title}</div>
-              <div className="text-xs text-sky-500 text-center">{item.artist_name}</div>
+              <div className="text-sky-700 font-medium text-center line-clamp-1">
+                {item.display_title}
+              </div>
+              <div className="text-xs text-sky-500 text-center line-clamp-1">
+                {item.artist_name}
+              </div>
             </div>
           )}
         />
@@ -59,17 +65,24 @@ const Home: React.FC = () => {
           items={videoData || []}
           loading={!videoData}
           emptyText="No Videos"
-          detailsPath={item => `/videos/${item.id}`}
-          renderItem={item => (
-            <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px]">
+          detailsPath={(item) => `/videos/${item.id}`}
+          renderItem={(item) => (
+            <a
+              href={`/videos/${item.id}`}
+              className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px] hover:scale-105 transition"
+            >
               <img
                 src={item.thumbnail}
                 alt={item.display_title}
                 className="w-16 h-16 rounded mb-2 object-cover"
               />
-              <div className="text-sky-700 font-medium text-center">{item.display_title}</div>
-              <div className="text-xs text-sky-500 text-center">{item.artist_name}</div>
-            </div>
+              <div className="text-sky-700 font-medium text-center line-clamp-1">
+                {item.display_title}
+              </div>
+              <div className="text-xs text-sky-500 text-center">
+                {item.artist_name}
+              </div>
+            </a>
           )}
         />
 
@@ -79,16 +92,20 @@ const Home: React.FC = () => {
           items={podcastData || []}
           loading={!podcastData}
           emptyText="No Podcasts"
-          detailsPath={item => `/podcasts/${item.id}`}
-          renderItem={item => (
+          detailsPath={(item) => `/podcasts/${item.id}`}
+          renderItem={(item) => (
             <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px]">
               <img
                 src={item.thumbnail}
                 alt={item.display_title}
                 className="w-16 h-16 rounded mb-2 object-cover"
               />
-              <div className="text-sky-700 font-medium text-center">{item.display_title}</div>
-              <div className="text-xs text-sky-500 text-center">{item.artist_name}</div>
+              <div className="text-sky-700 font-medium text-center line-clamp-1">
+                {item.display_title}
+              </div>
+              <div className="text-xs text-sky-500 text-center line-clamp-1">
+                {item.artist_name}
+              </div>
             </div>
           )}
         />
@@ -99,16 +116,20 @@ const Home: React.FC = () => {
           items={apparelsData || []}
           loading={!apparelsData}
           emptyText="No Apparels"
-          detailsPath={item => `/apparels/${item.id}`}
-          renderItem={item => (
+          detailsPath={(item) => `/apparels/${item.id}`}
+          renderItem={(item) => (
             <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px]">
               <img
                 src={item.image && item.image[0]}
                 alt={item.product_name}
                 className="w-16 h-16 rounded mb-2 object-cover"
               />
-              <div className="text-sky-700 font-medium text-center">{item.product_name}</div>
-              <div className="text-xs text-sky-500 text-center">{item.product_description}</div>
+              <div className="text-sky-700 font-medium text-center line-clamp-1">
+                {item.product_name}
+              </div>
+              <div className="text-xs text-sky-500 text-center line-clamp-1">
+                {item.product_description}
+              </div>
             </div>
           )}
         />

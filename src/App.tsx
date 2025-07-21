@@ -22,6 +22,7 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import Terms from "./pages/Terms";
 import AudioPlayer from "./pages/AudioPlayer";
+import VideoPlayer from "./pages/VideoPlayer";
 
 // Auth guard for protected routes
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -60,6 +61,7 @@ const App: React.FC = () => {
         <Route element={<ProtectedLayout />}>
           <Route index element={<Home />} />
           <Route path="music/:id" element={<AudioPlayer />} />
+          <Route path="videos/:id" element={<VideoPlayer />} />
           <Route path="profile" element={<Profile />} />
           <Route path="cart" element={<Cart />} />
           <Route path="history" element={<History />} />
