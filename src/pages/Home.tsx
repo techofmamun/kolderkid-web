@@ -1,4 +1,3 @@
-import Button from "../components/Button";
 import HorizontalScrollSection from "../components/HorizontalScrollSection";
 import {
   useGetApparelsQuery,
