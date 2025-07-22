@@ -11,16 +11,25 @@ const AuthContainer: React.FC = () => {
         <OnboardingSlider />
       </div>
       {/* Auth form right */}
-      <div className="w-full flex-1 flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg">
+      <div
+        className="w-full flex-1 flex flex-col items-center justify-center ˝"
+        style={{
+          backgroundImage: `url(${logo})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "#F0F4F8",
+        }}
+      >
         {/* Existing Outlet for child routes */}
-        <div className="mb-12 flex flex-col items-center">
-          <img
-            src={logo}
-            alt="Kolderkid Universe"
-            className="size-60 lg:size-80 mx-auto drop-shadow-lg transition-all duration-300"
-          />
+        <div className="h-full w-full flex items-center justify-center  backdrop-blur-sm p-6">
+          <div className="flex flex-col items-center w-full max-w-md gap-8">
+            <h1 className="text-4xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center">
+              KOLDERKID UNIVERSE
+            </h1>
+            <Outlet />
+          </div>
         </div>
-        <Outlet />
       </div>
     </div>
   );

@@ -98,13 +98,14 @@ const Sidebar: React.FC = () => {
         <img
           src={logo}
           alt="Kolderkid Universe"
-          className="h-16 w-16 mx-auto"
+          className="size-40 mx-auto"
+          draggable="false"
         />
-        <div className="text-center font-bold text-lg mt-2">
+        {/* <div className="text-center font-bold text-lg mt-2">
           KOLDERKID
           <br />
           UNIVERSE
-        </div>
+        </div> */}
       </div>
       <div className="flex-1 w-full overflow-y-auto">
         <nav className="w-full">
