@@ -170,7 +170,7 @@ export const api = createApi({
         response.data || [],
     }),
 
-    buyAudio: builder.mutation<
+    subscribe: builder.mutation<
       { status: boolean; data?: { payment_url?: string } },
       { product_id: number; type_of_item: number }
     >({
@@ -182,6 +182,16 @@ export const api = createApi({
           product_id,
           type_of_item,
         },
+      }),
+    }),
+    buyApparel: builder.mutation<
+      { status: boolean; data?: { payment_url?: string } },
+      { product_id: number }
+    >({
+      query: ({ product_id }) => ({
+        url: "checkoutsession",
+        method: "POST",
+        body: { type: "product", product_id, type_of_item: 4 },
       }),
     }),
   }),
@@ -201,5 +211,6 @@ export const {
   useLikeAudioMutation,
   useDownloadAudioMutation,
   useGetRelatedAudiosQuery,
-  useBuyAudioMutation,
+  useSubscribeMutation,
+  useBuyApparelMutation,
 } = api;

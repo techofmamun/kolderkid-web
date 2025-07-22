@@ -10,7 +10,7 @@ import {
   useGetMediaDetailsQuery,
   useLikeAudioMutation,
   useDownloadAudioMutation,
-  useBuyAudioMutation,
+  useSubscribeMutation,
 } from "../services/api";
 import type { MediaItem } from "../services/api";
 import RelatedCard from "../components/RelatedCard";
@@ -31,7 +31,7 @@ const VideoPlayer: React.FC = () => {
   });
   const [likeVideo] = useLikeAudioMutation();
   const [downloadVideo] = useDownloadAudioMutation();
-  const [buy] = useBuyAudioMutation();
+  const [buy] = useSubscribeMutation();
   const [buying, setBuying] = useState(false);
   const [showBuySuccess, setShowBuySuccess] = useState(false);
   useEffect(() => {

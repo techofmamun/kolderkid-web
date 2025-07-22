@@ -6,7 +6,7 @@ import {
   useLikeAudioMutation,
   useDownloadAudioMutation,
   useGetMusicQuery,
-  useBuyAudioMutation,
+  useSubscribeMutation,
 } from "../services/api";
 import RelatedCard from "../components/RelatedCard";
 
@@ -23,7 +23,7 @@ const AudioPlayer: React.FC = () => {
   const [liked, setLiked] = useState(false);
   const [likeAudio] = useLikeAudioMutation();
   const [downloadAudio] = useDownloadAudioMutation();
-  const [buy] = useBuyAudioMutation();
+  const [buy] = useSubscribeMutation();
   // Fetch audio details from API
   const { data: track, isLoading } = useGetMediaDetailsQuery({
     filter: 1,
