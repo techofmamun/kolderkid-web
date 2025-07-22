@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import HorizontalScrollSection from "../components/HorizontalScrollSection";
 import {
   useGetApparelsQuery,
@@ -9,26 +10,57 @@ import {
 
 const Home: React.FC = () => {
   const { data: banners, isLoading: loadingBanner } = useGetBannerQuery();
-  const { data: musicData } = useGetMusicQuery();
-  const { data: videoData } = useGetVideosQuery();
-  const { data: podcastData } = useGetPodcastsQuery();
-  const { data: apparelsData } = useGetApparelsQuery();
+  const [bannerIdx, setBannerIdx] = useState(0);
+
+  useEffect(() => {
+    if (!banners || banners.length === 0) return;
+    const timer = setTimeout(() => {
+      setBannerIdx((prev) => (prev < banners.length - 1 ? prev + 1 : 0));
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [bannerIdx, banners]);
+  const { data: musicData } = useGetMusicQuery({});
+  const { data: videoData } = useGetVideosQuery({});
+  const { data: podcastData } = useGetPodcastsQuery({});
+  const { data: apparelsData } = useGetApparelsQuery({});
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-200 p-4">
       <div className="max-w-5xl mx-auto">
         {/* Banner */}
-        <div className="w-full h-48 bg-sky-300 rounded-xl flex items-center justify-center mb-8">
+        <div className="w-full h-68 bg-sky-300 rounded-xl flex items-center justify-center mb-8 overflow-hidden relative">
           {loadingBanner ? (
             <div className="text-sky-900 text-2xl font-bold">
               Loading Banner...
             </div>
           ) : banners && banners.length ? (
-            <img
-              src={banners[0].bannerImage}
-              alt={banners[0].bannerTitel}
-              className="h-full object-cover rounded-xl w-full"
-            />
+            <div className="w-full h-full relative">
+              {banners.map((banner, idx) => (
+                <img
+                  key={banner.bannerImage}
+                  src={banner.bannerImage}
+                  alt={banner.bannerTitel}
+                  className={`absolute top-0 left-0 w-full h-full object-cover rounded-xl transition-all duration-700 ease-in-out ${
+                    idx === bannerIdx ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0'
+                  }`}
+                  style={{
+                    transitionProperty: 'opacity, transform',
+                  }}
+                  draggable={false}
+                />
+              ))}
+              {/* Dots */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                {banners.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={`h-2 w-6 rounded-full transition-all duration-300 ${
+                      idx === bannerIdx ? 'bg-sky-500' : 'bg-sky-200'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           ) : (
             <div className="text-sky-900 text-2xl font-bold">No Banner</div>
           )}

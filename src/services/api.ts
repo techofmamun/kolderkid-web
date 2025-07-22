@@ -169,6 +169,21 @@ export const api = createApi({
       transformResponse: (response: { data: MediaItem[] }) =>
         response.data || [],
     }),
+
+    buyAudio: builder.mutation<
+      { status: boolean; data?: { payment_url?: string } },
+      { product_id: number; type_of_item: number }
+    >({
+      query: ({ product_id, type_of_item }) => ({
+        url: "checkoutsession",
+        method: "POST",
+        body: {
+          type: "product",
+          product_id,
+          type_of_item,
+        },
+      }),
+    }),
   }),
 });
 
@@ -186,4 +201,5 @@ export const {
   useLikeAudioMutation,
   useDownloadAudioMutation,
   useGetRelatedAudiosQuery,
+  useBuyAudioMutation,
 } = api;

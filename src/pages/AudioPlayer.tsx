@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
+// import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   useGetMediaDetailsQuery,
   useLikeAudioMutation,
   useDownloadAudioMutation,
   useGetMusicQuery,
+  useBuyAudioMutation,
 } from "../services/api";
 import RelatedCard from "../components/RelatedCard";
 
@@ -16,9 +18,12 @@ const AudioPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
+  const [buying, setBuying] = useState(false);
+  const [showBuySuccess, setShowBuySuccess] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeAudio] = useLikeAudioMutation();
   const [downloadAudio] = useDownloadAudioMutation();
+  const [buy] = useBuyAudioMutation();
   // Fetch audio details from API
   const { data: track, isLoading } = useGetMediaDetailsQuery({
     filter: 1,
@@ -85,16 +90,6 @@ const AudioPlayer: React.FC = () => {
         0,
         Math.min(duration, audioRef.current.currentTime + sec)
       );
-    }
-  };
-
-  const handleLike = async () => {
-    setLiked((l) => !l);
-    try {
-      await likeAudio({ filter: 1, id: track.id });
-    } catch {
-      setLiked((l) => !l); // Revert like state on error
-      console.error("Like failed");
     }
   };
 
@@ -253,7 +248,15 @@ const AudioPlayer: React.FC = () => {
             </svg>
           </button>
           <button
-            onClick={handleLike}
+            onClick={async () => {
+              setLiked((l) => !l);
+              try {
+                if (track) await likeAudio({ filter: 1, id: track.id });
+              } catch {
+                setLiked((l) => !l); // Revert like state on error
+                console.error("Like failed");
+              }
+            }}
             aria-label="Favourite"
             className="hover:scale-110 transition"
           >
@@ -269,13 +272,114 @@ const AudioPlayer: React.FC = () => {
             </svg>
           </button>
         </div>
+        {/* Buy Now Button (only if not subscribed) */}
+        {!track?.subscription && (
+          <div className="flex items-center justify-center mt-8">
+            <button
+              className="px-8 py-3 rounded-full font-bold text-white relative overflow-hidden shadow-2xl transition disabled:opacity-60 backdrop-blur-xl border border-white/30"
+              style={{
+                background: "linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%)", // sky-400 to sky-500
+                boxShadow: "0 8px 32px 0 rgba(14,165,233,0.15)",
+                border: "1.5px solid rgba(255,255,255,0.25)",
+                position: "relative",
+                zIndex: 1,
+              }}
+              disabled={buying}
+              onClick={async () => {
+                setBuying(true);
+                try {
+                  const res = await buy({
+                    product_id: track.id,
+                    type_of_item: 1,
+                  }).unwrap();
+                  if (res.status && res.data?.payment_url) {
+                    window.open(res.data.payment_url, "_blank");
+                    setShowBuySuccess(true);
+                  }
+                } catch {
+                  alert("Purchase failed. Please try again.");
+                } finally {
+                  setBuying(false);
+                }
+              }}
+            >
+              <span
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "linear-gradient(120deg, #fff 0%, #a7f3d0 100%)",
+                  opacity: 0.18,
+                  filter: "blur(8px)",
+                  zIndex: 0,
+                }}
+              ></span>
+              <span className="relative z-10 flex items-center gap-2">
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                  <rect
+                    x="2"
+                    y="7"
+                    width="20"
+                    height="13"
+                    rx="3"
+                    fill="#fff"
+                    fillOpacity="0.15"
+                  />
+                  <rect
+                    x="2"
+                    y="7"
+                    width="20"
+                    height="13"
+                    rx="3"
+                    stroke="#fff"
+                    strokeWidth="1.5"
+                  />
+                  <path
+                    d="M7 11h10M7 15h6"
+                    stroke="#fff"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                {buying ? "Processing..." : "Subscribe Now"}
+              </span>
+            </button>
+          </div>
+        )}
+        {/* Buy Success Modal */}
+        {/* {showBuySuccess && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+            <div className="bg-white rounded-2xl p-8 flex flex-col items-center shadow-xl">
+              <svg width="48" height="48" fill="#22c55e" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="#22c55e" opacity="0.15" />
+                <path
+                  d="M8 12.5l2.5 2.5L16 9"
+                  stroke="#22c55e"
+                  strokeWidth="2"
+                  fill="none"
+                />
+              </svg>
+              <div className="text-2xl font-bold text-emerald-600 mt-4 mb-2">
+                Success!
+              </div>
+              <div className="text-gray-700 mb-4">Thanks for buying.</div>
+              <button
+                className="px-6 py-2 rounded-full bg-sky-500 text-white font-bold shadow hover:bg-sky-600 transition"
+                onClick={() => {
+                  setShowBuySuccess(false);
+                  window.location.reload();
+                }}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )} */}
         {showAlert && (
           <div className="mt-8 p-4 bg-sky-900/80 text-white rounded-2xl text-center shadow-xl">
             You can only listen to 15 seconds of this audio.
             <br />
             Subscribe for full access.
             <button
-              className="mt-4 px-4 py-2 bg-sky-500 rounded text-white font-bold hover:bg-sky-600 transition"
+              className="ml-2 mt-4 px-4 py-1 bg-sky-500 rounded text-white font-bold hover:bg-sky-600 transition"
               onClick={() => setShowAlert(false)}
             >
               OK
