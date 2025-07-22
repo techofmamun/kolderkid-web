@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks";
 import { api } from "../services/api";
-import logo from "/assets/images/kolderkid-logo.png"; 
+import logo from "/assets/images/kolderkid-logo.png";
 import ProfileSidebarSection from "./ProfileSidebarSection";
 import {
   FaUserCircle,
@@ -98,7 +98,7 @@ const Sidebar: React.FC = () => {
         <img
           src={logo}
           alt="Kolderkid Universe"
-          className="size-40 mx-auto"
+          className="size-30 mx-auto"
           draggable="false"
         />
         {/* <div className="text-center font-bold text-lg mt-2">
@@ -106,6 +106,9 @@ const Sidebar: React.FC = () => {
           <br />
           UNIVERSE
         </div> */}
+        <h1 className="text-xl sm:text-2xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center">
+          KOLDERKID UNIVERSE
+        </h1>
       </div>
       <div className="flex-1 w-full overflow-y-auto">
         <nav className="w-full">
