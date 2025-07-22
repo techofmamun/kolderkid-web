@@ -38,6 +38,17 @@ export interface ApparelItem {
   product_name: string;
   product_description: string;
   image: string[];
+  admin_profit_percentage: number;
+  cart_quantity: number;
+  category: string;
+  creator_profit_percentage: number;
+  favourite: boolean;
+  is_admin_product: boolean;
+  price: number;
+  quantity: number | null;
+  size: string;
+  stripe_id: string;
+  subscription: boolean;
 }
 
 export interface Item {
@@ -96,40 +107,58 @@ export const api = createApi({
       transformResponse: (response: { data: Banner[] }) =>
         response.data || null,
     }),
-    getMusic: builder.query<MediaItem[], void>({
-      query: () => "getitems?filter=1&page=1",
-      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+    getMusic: builder.query<MediaItem[], { page?: number }>({
+      query: ({ page = 1 } = {}) => `getitems?filter=1&page=${page}`,
+      transformResponse: (response: { data: MediaItem[] }) =>
+        response.data || [],
     }),
-    getAudioDetails: builder.query<MediaItem | null, { filter: number; id: number }>({
-      query: ({ filter, id }) => `getitemsdetails?filter=${filter}&items_id=${id}`,
-      transformResponse: (response: { data: MediaItem[] }) => response.data?.[0] || null,
+    getMediaDetails: builder.query<
+      MediaItem | null,
+      { filter: number; id: number }
+    >({
+      query: ({ filter, id }) =>
+        `getitemsdetails?filter=${filter}&items_id=${id}`,
+      transformResponse: (response: { data: MediaItem[] }) =>
+        response.data?.[0] || null,
     }),
-    likeAudio: builder.mutation<{ status: boolean }, { filter: number; id: number }>({
+    likeAudio: builder.mutation<
+      { status: boolean },
+      { filter: number; id: number }
+    >({
       query: ({ filter, id }) => ({
         url: "like",
         method: "POST",
         body: { type_of_item: filter, item_id: id },
       }),
     }),
-    downloadAudio: builder.mutation<{ status: boolean; message: string }, { id: number }>({
+    downloadAudio: builder.mutation<
+      { status: boolean; message: string },
+      { id: number }
+    >({
       query: ({ id }) => ({
         url: "download",
         method: "POST",
         body: { items_id: id },
       }),
     }),
-    getVideos: builder.query<MediaItem[], void>({
-      query: () => "getitems?filter=2&page=1",
+    getVideos: builder.query<MediaItem[], { page?: number }>({
+      query: ({ page = 1 } = {}) => `getitems?filter=2&page=${page}`,
       transformResponse: (response: { data: MediaItem[] }) =>
         response.data || [],
     }),
-    getPodcasts: builder.query<MediaItem[], void>({
-      query: () => "getitems?filter=3&page=1",
+    getPodcasts: builder.query<MediaItem[], { page?: number }>({
+      query: ({ page = 1 } = {}) => `getitems?filter=3&page=${page}`,
       transformResponse: (response: { data: MediaItem[] }) =>
         response.data || [],
     }),
-    getApparels: builder.query<ApparelItem[], void>({
-      query: () => "getitems?filter=4&page=1",
+
+    getApparelById: builder.query<ApparelItem | null, string>({
+      query: (id) => `getitemsdetails?filter=4&items_id=${id}`,
+      transformResponse: (response: { data: ApparelItem[] }) =>
+        response.data?.[0] || null,
+    }),
+    getApparels: builder.query<ApparelItem[], { page?: number }>({
+      query: ({ page = 1 } = {}) => `getitems?filter=4&page=${page}`,
       transformResponse: (response: { data: ApparelItem[] }) =>
         response.data || [],
     }),
@@ -137,7 +166,8 @@ export const api = createApi({
     // Related audios endpoint (example: returns similar items by category or artist)
     getRelatedAudios: builder.query<MediaItem[], { id: number }>({
       query: ({ id }) => `getrelateditems?items_id=${id}`,
-      transformResponse: (response: { data: MediaItem[] }) => response.data || [],
+      transformResponse: (response: { data: MediaItem[] }) =>
+        response.data || [],
     }),
   }),
 });
@@ -151,7 +181,8 @@ export const {
   useGetVideosQuery,
   useGetPodcastsQuery,
   useGetApparelsQuery,
-  useGetAudioDetailsQuery,
+  useGetApparelByIdQuery,
+  useGetMediaDetailsQuery,
   useLikeAudioMutation,
   useDownloadAudioMutation,
   useGetRelatedAudiosQuery,

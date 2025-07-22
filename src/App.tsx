@@ -23,6 +23,12 @@ import Register from "./pages/Register";
 import Terms from "./pages/Terms";
 import AudioPlayer from "./pages/AudioPlayer";
 import VideoPlayer from "./pages/VideoPlayer";
+import ApparelDetails from "./pages/ApparelDetails";
+import MusicList from "./pages/MusicList";
+import VideosList from "./pages/VideosList";
+import PodcastsList from "./pages/PodcastsList";
+import ApparelsList from "./pages/ApparelsList";
+import PodcastPlayer from "./pages/PodcastPlayer";
 
 // Auth guard for protected routes
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -60,8 +66,14 @@ const App: React.FC = () => {
         {/* Protected layout route */}
         <Route element={<ProtectedLayout />}>
           <Route index element={<Home />} />
+          <Route path="music" element={<MusicList />} />
           <Route path="music/:id" element={<AudioPlayer />} />
+          <Route path="videos" element={<VideosList />} />
           <Route path="videos/:id" element={<VideoPlayer />} />
+          <Route path="podcasts" element={<PodcastsList />} />
+          <Route path="podcasts/:id" element={<PodcastPlayer />} />
+          <Route path="apparels" element={<ApparelsList />} />
+          <Route path="apparels/:id" element={<ApparelDetails />} />
           <Route path="profile" element={<Profile />} />
           <Route path="cart" element={<Cart />} />
           <Route path="history" element={<History />} />

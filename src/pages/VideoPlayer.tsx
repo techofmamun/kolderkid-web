@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetVideosQuery, useGetAudioDetailsQuery } from "../services/api";
+import { useGetVideosQuery, useGetMediaDetailsQuery } from "../services/api";
 import type { MediaItem } from "../services/api";
 import RelatedCard from "../components/RelatedCard";
 
@@ -10,14 +10,25 @@ const VideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   // Reuse getAudioDetailsQuery for video details with filter=2
-  const { data: video, isLoading } = useGetAudioDetailsQuery({ filter: 2, id: Number(id) });
-  const { data: related = [], isLoading: relatedLoading } = useGetVideosQuery();
+  const { data: video, isLoading } = useGetMediaDetailsQuery({
+    filter: 2,
+    id: Number(id),
+  });
+  const { data: related = [], isLoading: relatedLoading } = useGetVideosQuery({
+    page: 1,
+  });
 
   if (isLoading) {
-    return <div className="text-center py-20 text-xl text-sky-700">Loading...</div>;
+    return (
+      <div className="text-center py-20 text-xl text-sky-700">Loading...</div>
+    );
   }
   if (!video) {
-    return <div className="text-center py-20 text-xl text-sky-700">Video not found.</div>;
+    return (
+      <div className="text-center py-20 text-xl text-sky-700">
+        Video not found.
+      </div>
+    );
   }
 
   const handlePlayPause = () => {
@@ -50,8 +61,12 @@ const VideoPlayer: React.FC = () => {
             className="w-full h-96 object-cover bg-black"
           />
         </div>
-        <h2 className="text-3xl font-bold text-center mb-2 drop-shadow-lg">{video.display_title}</h2>
-        <p className="text-center text-gray-300 mb-6 text-lg">{video.description}</p>
+        <h2 className="text-3xl font-bold text-center mb-2 drop-shadow-lg">
+          {video.display_title}
+        </h2>
+        <p className="text-center text-gray-300 mb-6 text-lg">
+          {video.description}
+        </p>
         <div className="flex items-center justify-center gap-8 mt-6">
           <button
             onClick={handlePlayPause}
@@ -59,9 +74,14 @@ const VideoPlayer: React.FC = () => {
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (
-              <svg width="32" height="32" fill="white" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+              <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                <rect x="6" y="5" width="4" height="14" />
+                <rect x="14" y="5" width="4" height="14" />
+              </svg>
             ) : (
-              <svg width="32" height="32" fill="white" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+              <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                <polygon points="5,3 19,12 5,21" />
+              </svg>
             )}
           </button>
         </div>
@@ -72,7 +92,9 @@ const VideoPlayer: React.FC = () => {
         {relatedLoading ? (
           <div className="text-center text-sky-400">Loading...</div>
         ) : related.length === 0 ? (
-          <div className="text-center text-gray-400">No related videos found.</div>
+          <div className="text-center text-gray-400">
+            No related videos found.
+          </div>
         ) : (
           <div className="flex gap-6 overflow-x-auto pb-2 hide-scrollbar">
             {related.map((item: MediaItem) => (

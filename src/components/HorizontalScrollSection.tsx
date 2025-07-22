@@ -34,11 +34,16 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
       });
     }
   };
+  if (!items || items.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mb-8">
       <div className="flex items-center mb-2 gap-2">
         <span className="text-lg font-bold text-sky-800 flex-1">{title}</span>
+        {/* {items.length > 0 && (
+          <> */}
         <button
           className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
           onClick={() => scrollSection("left")}
@@ -59,6 +64,8 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
         >
           <FaChevronRight />
         </button>
+        {/* </>
+        )} */}
       </div>
 
       <div
@@ -91,7 +98,9 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
               </div>
             ))
           ) : (
-            <div className="text-sky-700">{emptyText}</div>
+            <div className="text-sky-800 text-center">
+              {emptyText} available
+            </div>
           )}
         </div>
       </div>

@@ -1,14 +1,14 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  useGetMediaDetailsQuery,
-  useLikeAudioMutation,
-  useDownloadAudioMutation,
-  useGetMusicQuery,
-} from "../services/api";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import RelatedCard from "../components/RelatedCard";
+import {
+  useDownloadAudioMutation,
+  useGetMediaDetailsQuery,
+  useGetPodcastsQuery,
+  useLikeAudioMutation
+} from "../services/api";
 
-const AudioPlayer: React.FC = () => {
+const PodcastPlayer: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -24,8 +24,8 @@ const AudioPlayer: React.FC = () => {
     filter: 1,
     id: Number(id),
   });
-  // Fetch related audios (using music query)
-  const { data: related = [], isLoading: relatedLoading } = useGetMusicQuery({
+  // Fetch related audios (using podcasts query)
+  const { data: related = [], isLoading: relatedLoading } = useGetPodcastsQuery({
     page: 1,
   });
 
@@ -310,4 +310,4 @@ function formatTime(time: number) {
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
-export default AudioPlayer;
+export default PodcastPlayer;
