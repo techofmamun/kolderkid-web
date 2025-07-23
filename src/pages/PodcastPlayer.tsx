@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Breadcrumb from "../components/Breadcrumb";
 import RelatedCard from "../components/RelatedCard";
 import {
   useDownloadAudioMutation,
@@ -10,7 +11,6 @@ import {
 
 const PodcastPlayer: React.FC = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -120,13 +120,7 @@ const PodcastPlayer: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-neutral-900 via-sky-950 to-neutral-800 text-white p-4">
       <div className="w-full max-w-md mx-auto">
-        <button
-          className="mb-4 text-white text-2xl hover:text-sky-400 transition"
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-        >
-          ←
-        </button>
+        <Breadcrumb />
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
           <img
             src={track.thumbnail}

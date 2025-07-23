@@ -1,10 +1,11 @@
 import React, { useRef, useCallback } from "react";
-import { useGetMusicQuery } from "../services/api";
+import { useGetMusicQuery, type MediaItem } from "../services/api";
 import { Link } from "react-router-dom";
+import Breadcrumb from "../components/Breadcrumb";
 
 const MusicList: React.FC = () => {
   const [page, setPage] = React.useState(1);
-  const [items, setItems] = React.useState<any[]>([]);
+  const [items, setItems] = React.useState<MediaItem[]>([]);
   const { data, isFetching, error } = useGetMusicQuery({ page });
   const loader = useRef<HTMLDivElement | null>(null);
 
@@ -38,6 +39,7 @@ const MusicList: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      <Breadcrumb />
       <h1 className="text-2xl font-bold mb-6 text-sky-800">All Music</h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (

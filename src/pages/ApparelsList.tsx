@@ -1,11 +1,12 @@
-import React, { useRef, useCallback } from "react";
-import { useGetApparelsQuery } from "../services/api";
+import React, { useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
+import Breadcrumb from "../components/Breadcrumb";
+import { useGetApparelsQuery, type ApparelItem } from "../services/api";
 
 const ApparelsList: React.FC = () => {
   const [page, setPage] = React.useState(1);
-  const [items, setItems] = React.useState<any[]>([]);
-  const { data, isLoading, isFetching } = useGetApparelsQuery({ page });
+  const [items, setItems] = React.useState<ApparelItem[]>([]);
+  const { data, isFetching } = useGetApparelsQuery({ page });
   const loader = useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
@@ -15,7 +16,7 @@ const ApparelsList: React.FC = () => {
   }, [data, page]);
 
   const handleObserver = useCallback(
-    (entries: any) => {
+    (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
       if (target.isIntersecting && !isFetching && data && data.length > 0) {
         setPage((prev) => prev + 1);
@@ -39,6 +40,7 @@ const ApparelsList: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      <Breadcrumb />
       <h1 className="text-2xl font-bold mb-6 text-sky-800">All Apparels</h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (

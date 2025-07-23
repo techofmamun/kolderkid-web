@@ -36,25 +36,42 @@ const Home: React.FC = () => {
           ) : banners && banners.length ? (
             <div className="w-full h-full relative">
               {banners.map((banner, idx) => (
-                <img
-                  key={banner.bannerImage}
-                  src={banner.bannerImage}
-                  alt={banner.bannerTitel}
-                  className={`absolute top-0 left-0 w-full h-full object-cover rounded-xl transition-all duration-700 ease-in-out ${
-                    idx === bannerIdx ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0'
-                  }`}
-                  style={{
-                    transitionProperty: 'opacity, transform',
-                  }}
-                  draggable={false}
-                />
+                <React.Fragment key={banner.bannerImage}>
+                  <img
+                    src={banner.bannerImage}
+                    alt={banner.bannerTitel}
+                    className={`absolute top-0 left-0 w-full h-full object-cover rounded-xl transition-all duration-700 ease-in-out ${
+                      idx === bannerIdx ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0'
+                    }`}
+                    style={{
+                      transitionProperty: 'opacity, transform',
+                    }}
+                    draggable={false}
+                  />
+                  {/* Overlay text and background */}
+                  {idx === bannerIdx && (
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-20 rounded-xl">
+                      <div className="mb-2 text-xs text-sky-200 font-semibold tracking-widest">New Release</div>
+                      <div className="text-2xl md:text-3xl font-bold text-white drop-shadow mb-1">{banner.bannerTitel}</div>
+                      <div className="text-base md:text-lg text-sky-100 drop-shadow mb-4 max-w-xl">{banner.bannerDescription}</div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-xs text-white/80 bg-sky-700/60 px-2 py-0.5 rounded-full">
+                          {bannerIdx + 1} / {banners.length}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
               {/* Dots */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-30">
                 {banners.map((_, idx) => (
-                  <span
+                  <button
                     key={idx}
-                    className={`h-2 w-6 rounded-full transition-all duration-300 ${
+                    type="button"
+                    aria-label={`Go to banner ${idx + 1}`}
+                    onClick={() => setBannerIdx(idx)}
+                    className={`h-2 w-6 rounded-full transition-all duration-300 focus:outline-none cursor-pointer hover:scale-110 ${
                       idx === bannerIdx ? 'bg-sky-500' : 'bg-sky-200'
                     }`}
                   />

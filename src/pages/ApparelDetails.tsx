@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetApparelByIdQuery } from "../services/api";
+import Breadcrumb from "../components/Breadcrumb";
 
 const ApparelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +18,7 @@ const ApparelDetails: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-6 mt-8">
+      <Breadcrumb />
       <button
         className="mb-4 text-sky-600 hover:underline"
         onClick={() => navigate(-1)}

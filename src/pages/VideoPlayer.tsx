@@ -3,21 +3,21 @@ function formatTime(time: number) {
   const seconds = Math.floor(time % 60);
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
-import React, { useRef, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import Breadcrumb from "../components/Breadcrumb";
+import RelatedCard from "../components/RelatedCard";
+import type { MediaItem } from "../services/api";
 import {
-  useGetVideosQuery,
-  useGetMediaDetailsQuery,
-  useLikeAudioMutation,
   useDownloadAudioMutation,
+  useGetMediaDetailsQuery,
+  useGetVideosQuery,
+  useLikeAudioMutation,
   useSubscribeMutation,
 } from "../services/api";
-import type { MediaItem } from "../services/api";
-import RelatedCard from "../components/RelatedCard";
 
 const VideoPlayer: React.FC = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -33,7 +33,7 @@ const VideoPlayer: React.FC = () => {
   const [downloadVideo] = useDownloadAudioMutation();
   const [buy] = useSubscribeMutation();
   const [buying, setBuying] = useState(false);
-  const [showBuySuccess, setShowBuySuccess] = useState(false);
+  const [, setShowBuySuccess] = useState(false);
   useEffect(() => {
     if (!video) return;
     setLiked(video.favourite || false);
@@ -139,13 +139,7 @@ const VideoPlayer: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-neutral-900 via-sky-950 to-neutral-800 text-white p-4">
       <div className="w-full max-w-2xl mx-auto">
-        <button
-          className="mb-4 text-white text-2xl hover:text-sky-400 transition"
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-        >
-          ←
-        </button>
+        <Breadcrumb />
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
           <video
             ref={videoRef}

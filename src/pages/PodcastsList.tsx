@@ -1,11 +1,12 @@
 import React, { useRef, useCallback } from "react";
-import { useGetPodcastsQuery } from "../services/api";
+import { useGetPodcastsQuery, type MediaItem } from "../services/api";
 import { Link } from "react-router-dom";
+import Breadcrumb from "../components/Breadcrumb";
 
 const PodcastsList: React.FC = () => {
   const [page, setPage] = React.useState(1);
-  const [items, setItems] = React.useState<any[]>([]);
-  const { data, isLoading, isFetching } = useGetPodcastsQuery({ page });
+  const [items, setItems] = React.useState<MediaItem[]>([]);
+  const { data, isFetching } = useGetPodcastsQuery({ page });
   const loader = useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
@@ -14,12 +15,15 @@ const PodcastsList: React.FC = () => {
     }
   }, [data, page]);
 
-  const handleObserver = useCallback((entries: any) => {
-    const target = entries[0];
-    if (target.isIntersecting && !isFetching && data && data.length > 0) {
-      setPage((prev) => prev + 1);
-    }
-  }, [isFetching, data]);
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && !isFetching && data && data.length > 0) {
+        setPage((prev) => prev + 1);
+      }
+    },
+    [isFetching, data]
+  );
 
   React.useEffect(() => {
     const option = {
@@ -36,6 +40,7 @@ const PodcastsList: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      <Breadcrumb />
       <h1 className="text-2xl font-bold mb-6 text-sky-800">All Podcasts</h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (
