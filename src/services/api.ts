@@ -126,7 +126,7 @@ export const api = createApi({
       { filter: number; id: number }
     >({
       query: ({ filter, id }) => ({
-        url: "like",
+        url: "addorremovefavourite",
         method: "POST",
         body: { type_of_item: filter, item_id: id },
       }),

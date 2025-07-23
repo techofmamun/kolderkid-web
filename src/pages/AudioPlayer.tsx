@@ -114,7 +114,7 @@ const AudioPlayer: React.FC = () => {
 
   return (
     <PageContainer>
-      <div className="w-full max-w-md mx-auto">
+      <div className="w-full max-w-md mx-auto ">
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
           <img
             src={track.thumbnail}
@@ -122,10 +122,10 @@ const AudioPlayer: React.FC = () => {
             className="w-full h-64 object-cover"
           />
         </div>
-        <h2 className="text-3xl font-bold text-center mb-2 drop-shadow-lg">
+        <h2 className="text-3xl font-bold text-center mb-2 drop-shadow-lg text-sky-700">
           {track.display_title}
         </h2>
-        <p className="text-center text-gray-300 mb-6 text-lg">
+        <p className="text-center mb-6 text-lg text-gray-500">
           {track.description}
         </p>
         <audio
@@ -135,7 +135,7 @@ const AudioPlayer: React.FC = () => {
           className="w-full"
         />
         <div className="flex items-center justify-between w-full mb-2 mt-4">
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-gray-500">
             {formatTime(currentTime)}
           </span>
           <input
@@ -150,7 +150,7 @@ const AudioPlayer: React.FC = () => {
             }}
             className="flex-1 mx-2 accent-sky-500"
           />
-          <span className="text-sm text-gray-400">{formatTime(duration)}</span>
+          <span className="text-sm text-gray-500">{formatTime(duration)}</span>
         </div>
         <div className="flex items-center justify-center gap-8 mt-6">
           <button
@@ -162,13 +162,13 @@ const AudioPlayer: React.FC = () => {
               width="32"
               height="32"
               fill="none"
-              stroke="white"
+              stroke="black"
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
               <path d="M12 19V5M5 12l7-7 7 7" />
             </svg>
-            <span className="block text-xs mt-1">10</span>
+            <span className="block text-xs mt-1 text-gray-500">10</span>
           </button>
           <button
             onClick={handlePlayPause}
@@ -176,12 +176,12 @@ const AudioPlayer: React.FC = () => {
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (
-              <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+              <svg width="32" height="32" fill="black" viewBox="0 0 24 24">
                 <rect x="6" y="5" width="4" height="14" />
                 <rect x="14" y="5" width="4" height="14" />
               </svg>
             ) : (
-              <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+              <svg width="32" height="32" fill="black " viewBox="0 0 24 24">
                 <polygon points="5,3 19,12 5,21" />
               </svg>
             )}
@@ -195,13 +195,13 @@ const AudioPlayer: React.FC = () => {
               width="32"
               height="32"
               fill="none"
-              stroke="white"
+              stroke="black"
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
               <path d="M12 5v14M19 12l-7 7-7-7" />
             </svg>
-            <span className="block text-xs mt-1">10</span>
+            <span className="block text-xs mt-1 text-gray-500">10</span>
           </button>
         </div>
         <div className="flex items-center justify-center gap-8 mt-8">
@@ -214,7 +214,7 @@ const AudioPlayer: React.FC = () => {
               width="28"
               height="28"
               fill="none"
-              stroke="white"
+              stroke="black"
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
@@ -232,7 +232,7 @@ const AudioPlayer: React.FC = () => {
               width="28"
               height="28"
               fill="none"
-              stroke="white"
+              stroke="black"
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
@@ -257,7 +257,7 @@ const AudioPlayer: React.FC = () => {
               width="28"
               height="28"
               fill={liked ? "#ef4444" : "none"}
-              stroke="white"
+              stroke="black"
               strokeWidth="2"
               viewBox="0 0 24 24"
             >

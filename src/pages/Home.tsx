@@ -40,6 +40,10 @@ const ItemCard: React.FC<ItemCardProps & { filter: number }> = ({
   const detailsPath = `/${type}/${item.id}`;
 
   const handleClick = () => {
+    if (type === "apparels") {
+      navigate(detailsPath);
+      return;
+    }
     fetchDetails({ filter, id: item.id }, true)
       .unwrap()
       .then(() => {
@@ -64,8 +68,13 @@ const ItemCard: React.FC<ItemCardProps & { filter: number }> = ({
           alt={title}
           className={`w-16 h-16  rounded${
             type === "musics" ? "-full" : ""
-          } mb-2 object-cover ${isLoading ? "animate-spin" : ""}`}
-          style={isLoading ? { animation: "spin 1s linear infinite" } : {}}
+          } mb-2 object-cover ${
+            isLoading
+              ? type === "musics"
+                ? "animate-spin"
+                : "animate-ping"
+              : ""
+          }`}
         />
       )}
       <div
@@ -98,7 +107,7 @@ const CarouselBanner = () => {
     return () => clearTimeout(timer);
   }, [bannerIdx, banners]);
   return (
-    <div className="w-full h-68 rounded-xl flex items-center justify-center mb-8 overflow-hidden relative">
+    <div className="w-full h-68 rounded-xl flex items-center justify-center mb-8 overflow-hidden relative bg-white/50">
       {loadingBanner ? (
         <div className="text-sky-900 text-2xl font-bold"></div>
       ) : banners && banners.length ? (
@@ -195,17 +204,6 @@ const Home: React.FC = () => {
       />
 
       <HorizontalScrollSection
-        title="Podcasts"
-        seeAllPath="/podcasts"
-        items={podcastData || []}
-        loading={!podcastData}
-        emptyText="No Podcasts"
-        renderItem={(item) => (
-          <ItemCard item={item} type="podcasts" filter={3} />
-        )}
-      />
-
-      <HorizontalScrollSection
         title="Apparels"
         seeAllPath="/apparels"
         items={apparelsData || []}
@@ -216,6 +214,16 @@ const Home: React.FC = () => {
         )}
       />
 
+      <HorizontalScrollSection
+        title="Podcasts"
+        seeAllPath="/podcasts"
+        items={podcastData || []}
+        loading={!podcastData}
+        emptyText="No Podcasts"
+        renderItem={(item) => (
+          <ItemCard item={item} type="podcasts" filter={3} />
+        )}
+      />
       {/* Example Button */}
       {/* <div className="flex justify-center mt-8">
           <Button text="Explore More" />

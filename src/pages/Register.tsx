@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../services/api";
 import Button from "../components/Button";
+import { Link } from "react-router-dom";
 
 const Register: React.FC = () => {
   const [firstname, setFirstname] = useState("");
@@ -30,10 +31,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-8 rounded-xl shadow-md w-full max-w-md"
-    >
+    <form onSubmit={handleSubmit}>
       <h2 className="text-2xl font-bold text-sky-700 mb-6 text-center">
         Register
       </h2>
@@ -76,9 +74,12 @@ const Register: React.FC = () => {
       />
       <div className="mt-4 text-center">
         <span className="text-sky-700">Already have an account? </span>
-        <a href="/login" className="text-sky-900 font-semibold hover:underline">
+        <Link
+          to="/login"
+          className="text-sky-900 font-semibold hover:underline"
+        >
           Login
-        </a>
+        </Link>
       </div>
     </form>
   );

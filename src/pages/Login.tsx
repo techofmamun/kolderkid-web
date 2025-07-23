@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../services/api";
 import Button from "../components/Button";
+import { Link } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,10 +24,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-8 rounded-xl shadow-md w-full max-w-md"
-    >
+    <form onSubmit={handleSubmit}>
       <h2 className="text-2xl font-bold text-sky-700 mb-6 text-center">
         Login
       </h2>
@@ -50,12 +48,12 @@ const Login: React.FC = () => {
       <Button text={isLoading ? "Logging in..." : "Login"} className="w-full" />
       <div className="mt-4 text-center">
         <span className="text-sky-700">Don't have an account? </span>
-        <a
-          href="/auth/register"
+        <Link
+          to="/auth/register"
           className="text-sky-900 font-semibold hover:underline"
         >
           Register
-        </a>
+        </Link>
       </div>
     </form>
   );

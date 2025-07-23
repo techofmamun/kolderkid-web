@@ -32,31 +32,31 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
       });
     }
   };
-  if (!items || items.length === 0) {
-    return null;
-  }
+  // if (!items || items.length === 0) {
+  //   return null;
+  // }
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 min-h-[192px]">
       <div className="flex items-center mb-2 gap-2">
         <span className="text-lg font-bold text-sky-800 flex-1">{title}</span>
         {items.length > 0 && (
           <>
             <button
-              className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
+              className="p-2 rounded-full  hover:scale-105  transition-all duration-200 text-sky-700 shadow cursor-pointer"
               onClick={() => scrollSection("left")}
               aria-label="Scroll left"
             >
               <FaChevronLeft />
             </button>
             <button
-              className="px-2 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
+              className="px-2 py-1 rounded-lg  hover:scale-105 text-sky-700 shadow cursor-pointer"
               onClick={() => navigate(seeAllPath)}
             >
               See All
             </button>
             <button
-              className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
+              className="p-2 rounded-full  hover:scale-105   text-sky-700 shadow cursor-pointer"
               onClick={() => scrollSection("right")}
               aria-label="Scroll right"
             >

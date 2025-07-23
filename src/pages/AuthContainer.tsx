@@ -27,7 +27,9 @@ const AuthContainer: React.FC = () => {
             <h1 className="text-4xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center">
               KOLDERKID UNIVERSE
             </h1>
-            <Outlet />
+            <div className="bg-white/85  p-8 rounded-xl shadow-md w-full max-w-md">
+              <Outlet />
+            </div>
           </div>
         </div>
       </div>
