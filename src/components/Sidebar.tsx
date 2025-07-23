@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks";
 import { api } from "../services/api";
 import logo from "/assets/images/kolderkid-logo.png";
-import ProfileSidebarSection from "./ProfileSidebarSection";
+// import ProfileSidebarSection from "./ProfileSidebarSection";
 import {
   FaUserCircle,
   FaShoppingBag,
@@ -77,10 +77,18 @@ const navItems = [
   },
 ];
 
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [open, setOpen] = React.useState(true);
+
+  // Optionally, close sidebar on route change if desired
+  // React.useEffect(() => {
+  //   setOpen(false);
+  // }, [location.pathname]);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -91,90 +99,105 @@ const Sidebar: React.FC = () => {
     }
   };
 
+
   return (
-    <aside className="w-64 bg-white shadow-lg min-h-screen p-6 flex flex-col items-center relative">
+    <div className={`flex flex-col h-full transition-all duration-300 ${open ? 'w-64' : 'w-20'} bg-white shadow-lg min-h-screen items-center relative`}> 
       {/* branding */}
-      <div className="mb-10">
+      <div className="mb-8 flex flex-col items-center w-full">
         <img
           src={logo}
           alt="Kolderkid Universe"
-          className="size-30 mx-auto"
+          className={`size-20 mx-auto transition-all duration-300 ${open ? '' : 'mt-16'}`}
           draggable="false"
         />
-        {/* <div className="text-center font-bold text-lg mt-2">
-          KOLDERKID
-          <br />
-          UNIVERSE
-        </div> */}
-        <h1 className="text-xl sm:text-2xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center">
-          KOLDERKID UNIVERSE
-        </h1>
+        {open && (
+          <h1 className="text-xl sm:text-2xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center w-full">
+            KOLDERKID UNIVERSE
+          </h1>
+        )}
       </div>
-      <div className="flex-1 w-full overflow-y-auto">
-        <nav className="w-full">
+      <div className="flex-1 w-full overflow-y-auto max-h-[calc(100vh-12rem)]">
+        <nav className="w-full p-2 md:p-6">
           <ul className="space-y-2">
-            {navItems.map((item) => (
-              <li key={item.name}>
-                {item.name === "Logout" ? (
-                  <a
-                    href="#logout"
-                    onClick={handleLogout}
-                    className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
-                      location.pathname === item.path
-                        ? "bg-sky-100 text-sky-700  border-sky-500"
-                        : "text-gray-700 hover:bg-sky-50 border-transparent"
-                    }`}
-                    style={{
-                      WebkitTransition: "background 0.3s, color 0.3s",
-                      transition: "background 0.3s, color 0.3s",
-                    }}
-                  >
-                    {React.cloneElement(item.icon, {
-                      className: `text-xl mr-3 transition-all duration-300 ease-in-out ${
+            {navItems.map((item) => {
+              // Handler for nav item click (not logout)
+              const handleNavClick = () => {
+                if (location.pathname !== item.path && open && window.innerWidth < 768) {
+                  setOpen(false);
+                }
+              };
+              return (
+                <li key={item.name}>
+                  {item.name === "Logout" ? (
+                    <a
+                      href="#logout"
+                      onClick={handleLogout}
+                      className={`flex ${open ? 'items-center' : 'flex-col items-center justify-center'} px-2 md:px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
                         location.pathname === item.path
-                          ? "text-sky-600"
-                          : "text-sky-400"
-                      }`,
-                    })}
-                    <span>{item.name}</span>
-                    <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />
-                  </a>
-                ) : (
-                  <Link
-                    to={item.path}
-                    className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
-                      location.pathname === item.path
-                        ? "bg-sky-100 text-sky-700  border-sky-500"
-                        : "text-gray-700 hover:bg-sky-50 border-transparent"
-                    }`}
-                    style={{
-                      WebkitTransition: "background 0.3s, color 0.3s",
-                      transition: "background 0.3s, color 0.3s",
-                    }}
-                  >
-                    {React.cloneElement(item.icon, {
-                      className: `text-xl mr-3 transition-all duration-300 ease-in-out ${
+                          ? "bg-sky-100 text-sky-700  border-sky-500"
+                          : "text-gray-700 hover:bg-sky-50 border-transparent"
+                      }`}
+                      style={{
+                        WebkitTransition: "background 0.3s, color 0.3s",
+                        transition: "background 0.3s, color 0.3s",
+                      }}
+                    >
+                      {React.cloneElement(item.icon, {
+                        className: `text-xl transition-all duration-300 ease-in-out ${open ? 'mr-0 md:mr-3' : 'mb-0'} ${
+                          location.pathname === item.path
+                            ? "text-sky-600"
+                            : "text-sky-400"
+                        }`,
+                      })}
+                      {open && <span className="ml-3">{item.name}</span>}
+                      {open && <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      onClick={handleNavClick}
+                      className={`flex ${open ? 'items-center' : 'flex-col items-center justify-center'} px-2 md:px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
                         location.pathname === item.path
-                          ? "text-sky-600"
-                          : "text-sky-400"
-                      }`,
-                    })}
-                    <span>{item.name}</span>
-                    {item.name === "Logout" && (
-                      <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />
-                    )}
-                  </Link>
-                )}
-              </li>
-            ))}
+                          ? "bg-sky-100 text-sky-700  border-sky-500"
+                          : "text-gray-700 hover:bg-sky-50 border-transparent"
+                      }`}
+                      style={{
+                        WebkitTransition: "background 0.3s, color 0.3s",
+                        transition: "background 0.3s, color 0.3s",
+                      }}
+                    >
+                      {React.cloneElement(item.icon, {
+                        className: `text-xl transition-all duration-300 ease-in-out ${open ? 'mr-0 md:mr-3' : 'mb-0'} ${
+                          location.pathname === item.path
+                            ? "text-sky-600"
+                            : "text-sky-400"
+                        }`,
+                      })}
+                      {open && <span className="ml-3">{item.name}</span>}
+                      {open && item.name === "Logout" && (
+                        <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />
+                      )}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </div>
-      <div className="w-full absolute bottom-0  flex flex-col items-center">
-        <ProfileSidebarSection />
-      </div>
-    </aside>
+      {/* <div className="w-full flex flex-col items-center px-2 pb-2 box-border">
+        {open && <ProfileSidebarSection />}
+      </div> */}
+      {/* Toggle button: top right when expanded, top center when collapsed */}
+      <button
+        className={`absolute top-4 z-50 p-2 rounded-md bg-white shadow border border-sky-200 text-sky-500 transition-all duration-300 ${open ? 'right-2' : 'left-1/2 -translate-x-1/2'}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+      >
+        {open ? <FaChevronLeft size={22} /> : <FaChevronRight size={22} />}
+      </button>
+    </div>
   );
-};
 
+};
 export default Sidebar;
