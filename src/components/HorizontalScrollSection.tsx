@@ -8,7 +8,6 @@ interface HorizontalScrollSectionProps {
   seeAllPath: string;
   items: Array<Item>;
   renderItem: (item: Item) => React.ReactNode;
-  detailsPath: (item: Item) => string;
   loading?: boolean;
   emptyText?: string;
 }
@@ -18,7 +17,6 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
   seeAllPath,
   items,
   renderItem,
-  detailsPath,
   loading,
   emptyText = "No items",
 }) => {
@@ -42,30 +40,30 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
     <div className="mb-8">
       <div className="flex items-center mb-2 gap-2">
         <span className="text-lg font-bold text-sky-800 flex-1">{title}</span>
-        {/* {items.length > 0 && (
-          <> */}
-        <button
-          className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
-          onClick={() => scrollSection("left")}
-          aria-label="Scroll left"
-        >
-          <FaChevronLeft />
-        </button>
-        <button
-          className="px-2 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
-          onClick={() => navigate(seeAllPath)}
-        >
-          See All
-        </button>
-        <button
-          className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
-          onClick={() => scrollSection("right")}
-          aria-label="Scroll right"
-        >
-          <FaChevronRight />
-        </button>
-        {/* </>
-        )} */}
+        {items.length > 0 && (
+          <>
+            <button
+              className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
+              onClick={() => scrollSection("left")}
+              aria-label="Scroll left"
+            >
+              <FaChevronLeft />
+            </button>
+            <button
+              className="px-2 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
+              onClick={() => navigate(seeAllPath)}
+            >
+              See All
+            </button>
+            <button
+              className="p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 shadow cursor-pointer"
+              onClick={() => scrollSection("right")}
+              aria-label="Scroll right"
+            >
+              <FaChevronRight />
+            </button>
+          </>
+        )}
       </div>
 
       <div
@@ -89,13 +87,7 @@ const HorizontalScrollSection: React.FC<HorizontalScrollSectionProps> = ({
             <div className="text-sky-700">Loading...</div>
           ) : items && items.length ? (
             items.map((item) => (
-              <div
-                key={item.id}
-                className="cursor-pointer"
-                onClick={() => navigate(detailsPath(item))}
-              >
-                {renderItem(item)}
-              </div>
+              <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
             ))
           ) : (
             <div className="text-sky-800 text-center">

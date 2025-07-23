@@ -208,6 +208,7 @@ export const {
   useGetApparelsQuery,
   useGetApparelByIdQuery,
   useGetMediaDetailsQuery,
+  useLazyGetMediaDetailsQuery,
   useLikeAudioMutation,
   useDownloadAudioMutation,
   useGetRelatedAudiosQuery,

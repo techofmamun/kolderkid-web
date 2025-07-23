@@ -5,7 +5,7 @@ function formatTime(time: number) {
 }
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import Breadcrumb from "../components/Breadcrumb";
+import PageContainer from "../components/PageContainer";
 import RelatedCard from "../components/RelatedCard";
 import type { MediaItem } from "../services/api";
 import {
@@ -63,19 +63,29 @@ const VideoPlayer: React.FC = () => {
         if (document.fullscreenElement === vid) {
           if (document.exitFullscreen) {
             document.exitFullscreen();
-          } else if ((document as Document & { webkitExitFullscreen?: () => void }).webkitExitFullscreen) {
-            (document as Document & { webkitExitFullscreen: () => void }).webkitExitFullscreen();
-          } else if ((document as Document & { msExitFullscreen?: () => void }).msExitFullscreen) {
-            (document as Document & { msExitFullscreen: () => void }).msExitFullscreen();
+          } else if (
+            (document as Document & { webkitExitFullscreen?: () => void })
+              .webkitExitFullscreen
+          ) {
+            (
+              document as Document & { webkitExitFullscreen: () => void }
+            ).webkitExitFullscreen();
+          } else if (
+            (document as Document & { msExitFullscreen?: () => void })
+              .msExitFullscreen
+          ) {
+            (
+              document as Document & { msExitFullscreen: () => void }
+            ).msExitFullscreen();
           }
         }
         setIsPlaying(false);
         setShowAlert(true);
       }
     };
-    vid.addEventListener('timeupdate', handleTimeUpdate);
+    vid.addEventListener("timeupdate", handleTimeUpdate);
     return () => {
-      vid.removeEventListener('timeupdate', handleTimeUpdate);
+      vid.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, [video?.subscription, videoRef]);
   const { data: related = [], isLoading: relatedLoading } = useGetVideosQuery({
@@ -137,9 +147,8 @@ const VideoPlayer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-neutral-900 via-sky-950 to-neutral-800 text-white p-4">
+    <PageContainer>
       <div className="w-full max-w-2xl mx-auto">
-        <Breadcrumb />
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
           <video
             ref={videoRef}
@@ -152,10 +161,30 @@ const VideoPlayer: React.FC = () => {
               if (vid) {
                 if (vid.requestFullscreen) {
                   vid.requestFullscreen();
-                } else if ((vid as HTMLVideoElement & { webkitRequestFullscreen?: () => void }).webkitRequestFullscreen) {
-                  (vid as HTMLVideoElement & { webkitRequestFullscreen: () => void }).webkitRequestFullscreen();
-                } else if ((vid as HTMLVideoElement & { msRequestFullscreen?: () => void }).msRequestFullscreen) {
-                  (vid as HTMLVideoElement & { msRequestFullscreen: () => void }).msRequestFullscreen();
+                } else if (
+                  (
+                    vid as HTMLVideoElement & {
+                      webkitRequestFullscreen?: () => void;
+                    }
+                  ).webkitRequestFullscreen
+                ) {
+                  (
+                    vid as HTMLVideoElement & {
+                      webkitRequestFullscreen: () => void;
+                    }
+                  ).webkitRequestFullscreen();
+                } else if (
+                  (
+                    vid as HTMLVideoElement & {
+                      msRequestFullscreen?: () => void;
+                    }
+                  ).msRequestFullscreen
+                ) {
+                  (
+                    vid as HTMLVideoElement & {
+                      msRequestFullscreen: () => void;
+                    }
+                  ).msRequestFullscreen();
                 }
               }
             }}
@@ -168,7 +197,9 @@ const VideoPlayer: React.FC = () => {
           {video.description}
         </p>
         <div className="flex items-center justify-between w-full mb-2 mt-4">
-          <span className="text-sm text-gray-400">{formatTime(currentTime)}</span>
+          <span className="text-sm text-gray-400">
+            {formatTime(currentTime)}
+          </span>
           <input
             type="range"
             min={0}
@@ -418,7 +449,7 @@ const VideoPlayer: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

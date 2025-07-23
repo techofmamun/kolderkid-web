@@ -68,8 +68,8 @@ const App: React.FC = () => {
         {/* Protected layout route */}
         <Route element={<ProtectedLayout />}>
           <Route index element={<Home />} />
-          <Route path="music" element={<MusicList />} />
-          <Route path="music/:id" element={<AudioPlayer />} />
+          <Route path="musics" element={<MusicList />} />
+          <Route path="musics/:id" element={<AudioPlayer />} />
           <Route path="videos" element={<VideosList />} />
           <Route path="videos/:id" element={<VideoPlayer />} />
           <Route path="podcasts" element={<PodcastsList />} />
