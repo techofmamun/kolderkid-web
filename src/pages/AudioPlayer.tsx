@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 // import axios from "axios";
 import { useParams } from "react-router-dom";
-import Breadcrumb from "../components/Breadcrumb";
+import PageContainer from "../components/PageContainer";
 import RelatedCard from "../components/RelatedCard";
 import {
   useDownloadAudioMutation,
@@ -113,9 +113,8 @@ const AudioPlayer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-neutral-900 via-sky-950 to-neutral-800 text-white p-4">
+    <PageContainer>
       <div className="w-full max-w-md mx-auto">
-        <Breadcrumb />
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
           <img
             src={track.thumbnail}
@@ -382,7 +381,7 @@ const AudioPlayer: React.FC = () => {
         )}
       </div>
       {/* Related Section */}
-      <div className="w-full max-w-3xl mx-auto mt-12">
+      <div className="w-full mt-12">
         <h3 className="text-xl font-bold mb-4 text-sky-400">Related Tracks</h3>
         {relatedLoading ? (
           <div className="text-center text-sky-400">Loading...</div>
@@ -398,7 +397,7 @@ const AudioPlayer: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 
