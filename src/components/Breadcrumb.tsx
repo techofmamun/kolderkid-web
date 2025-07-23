@@ -21,11 +21,11 @@ const Breadcrumb: React.FC = () => {
         const isLast = idx === pathnames.length - 1;
         return isLast ? (
           <span key={to} className="text-gray-500">
-            / {capitalize(decodeURIComponent(value))}
+          /{capitalize(decodeURIComponent(value))}
           </span>
         ) : (
           <span key={to}>
-            <span className="mx-1 text-gray-400">/</span>
+            <span className="mx-1 text-gray-400">{"->"}</span>
             <Link to={to} className="text-sky-700 hover:underline">
               {capitalize(decodeURIComponent(value))}
             </Link>
