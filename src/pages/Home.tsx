@@ -81,7 +81,7 @@ const Home: React.FC = () => {
   const { data: apparelsData } = useGetApparelsQuery({});
 
   return (
-    <PageContainer breadcrumb={false}>
+    <PageContainer>
       {/* Banner */}
       <div className="w-full h-68 bg-sky-300 rounded-xl flex items-center justify-center mb-8 overflow-hidden relative">
         {loadingBanner ? (

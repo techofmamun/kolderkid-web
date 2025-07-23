@@ -1,7 +1,7 @@
-import React, { useRef, useCallback } from "react";
-import { useGetMusicQuery, type MediaItem } from "../services/api";
+import React, { useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import Breadcrumb from "../components/Breadcrumb";
+import PageContainer from "../components/PageContainer";
+import { useGetMusicQuery, type MediaItem } from "../services/api";
 
 const MusicList: React.FC = () => {
   const [page, setPage] = React.useState(1);
@@ -15,12 +15,15 @@ const MusicList: React.FC = () => {
     }
   }, [data, page]);
 
-  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    if (target.isIntersecting && !isFetching && data && data.length > 0) {
-      setPage((prev) => prev + 1);
-    }
-  }, [isFetching, data]);
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && !isFetching && data && data.length > 0) {
+        setPage((prev) => prev + 1);
+      }
+    },
+    [isFetching, data]
+  );
 
   React.useEffect(() => {
     const option = {
@@ -35,12 +38,16 @@ const MusicList: React.FC = () => {
     };
   }, [handleObserver]);
 
-  if (error) return <div className="text-center py-10 text-red-600 font-bold">Failed to load music.</div>;
+  if (error)
+    return (
+      <div className="text-center py-10 text-red-600 font-bold">
+        Failed to load music.
+      </div>
+    );
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <Breadcrumb />
-      <h1 className="text-2xl font-bold mb-6 text-sky-800">All Music</h1>
+    <PageContainer>
+      {/* <h1 className="text-2xl font-bold mb-6 text-sky-800">All Music</h1> */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (
           <Link
@@ -65,7 +72,7 @@ const MusicList: React.FC = () => {
       <div ref={loader} className="h-8 flex items-center justify-center">
         {isFetching && <span className="text-sky-600">Loading more...</span>}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

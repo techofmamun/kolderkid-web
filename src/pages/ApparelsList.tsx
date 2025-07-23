@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
-import Breadcrumb from "../components/Breadcrumb";
+import PageContainer from "../components/PageContainer";
 import { useGetApparelsQuery, type ApparelItem } from "../services/api";
 
 const ApparelsList: React.FC = () => {
@@ -39,9 +39,7 @@ const ApparelsList: React.FC = () => {
   }, [handleObserver]);
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <Breadcrumb />
-      <h1 className="text-2xl font-bold mb-6 text-sky-800">All Apparels</h1>
+   <PageContainer>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (
           <Link
@@ -66,7 +64,7 @@ const ApparelsList: React.FC = () => {
       <div ref={loader} className="h-8 flex items-center justify-center">
         {isFetching && <span className="text-sky-600">Loading more...</span>}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

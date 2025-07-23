@@ -99,19 +99,24 @@ const Sidebar: React.FC = () => {
     }
   };
 
-
   return (
-    <div className={`flex flex-col h-full transition-all duration-300 ${open ? 'w-64' : 'w-20'} bg-white shadow-lg min-h-screen items-center relative`}> 
+    <div
+      className={`flex flex-col h-full transition-all duration-300 ${
+        open ? "w-64" : "w-20"
+      } shadow-lg min-h-screen items-center relative backdrop-blur-sm`}
+    >
       {/* branding */}
       <div className="mb-8 flex flex-col items-center w-full">
         <img
           src={logo}
           alt="Kolderkid Universe"
-          className={`size-20 mx-auto transition-all duration-300 ${open ? '' : 'mt-16'}`}
+          className={`size-20 mx-auto transition-all duration-300 ${
+            open ? "" : "mt-16"
+          }`}
           draggable="false"
         />
         {open && (
-          <h1 className="text-xl sm:text-2xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center w-full">
+          <h1 className="text-xl sm:text-2xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center w-full px-1">
             KOLDERKID UNIVERSE
           </h1>
         )}
@@ -122,7 +127,11 @@ const Sidebar: React.FC = () => {
             {navItems.map((item) => {
               // Handler for nav item click (not logout)
               const handleNavClick = () => {
-                if (location.pathname !== item.path && open && window.innerWidth < 768) {
+                if (
+                  location.pathname !== item.path &&
+                  open &&
+                  window.innerWidth < 768
+                ) {
                   setOpen(false);
                 }
               };
@@ -132,7 +141,11 @@ const Sidebar: React.FC = () => {
                     <a
                       href="#logout"
                       onClick={handleLogout}
-                      className={`flex ${open ? 'items-center' : 'flex-col items-center justify-center'} px-2 md:px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
+                      className={`flex ${
+                        open
+                          ? "items-center"
+                          : "flex-col items-center justify-center"
+                      } px-2 md:px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
                         location.pathname === item.path
                           ? "bg-sky-100 text-sky-700  border-sky-500"
                           : "text-gray-700 hover:bg-sky-50 border-transparent"
@@ -143,20 +156,28 @@ const Sidebar: React.FC = () => {
                       }}
                     >
                       {React.cloneElement(item.icon, {
-                        className: `text-xl transition-all duration-300 ease-in-out ${open ? 'mr-0 md:mr-3' : 'mb-0'} ${
+                        className: `text-xl transition-all duration-300 ease-in-out ${
+                          open ? "mr-0 md:mr-3" : "mb-0"
+                        } ${
                           location.pathname === item.path
                             ? "text-sky-600"
                             : "text-sky-400"
                         }`,
                       })}
                       {open && <span className="ml-3">{item.name}</span>}
-                      {open && <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />}
+                      {open && (
+                        <FaSignOutAlt className="ml-auto text-sky-400 text-lg" />
+                      )}
                     </a>
                   ) : (
                     <Link
                       to={item.path}
                       onClick={handleNavClick}
-                      className={`flex ${open ? 'items-center' : 'flex-col items-center justify-center'} px-2 md:px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
+                      className={`flex ${
+                        open
+                          ? "items-center"
+                          : "flex-col items-center justify-center"
+                      } px-2 md:px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out border-l-4  ${
                         location.pathname === item.path
                           ? "bg-sky-100 text-sky-700  border-sky-500"
                           : "text-gray-700 hover:bg-sky-50 border-transparent"
@@ -167,7 +188,9 @@ const Sidebar: React.FC = () => {
                       }}
                     >
                       {React.cloneElement(item.icon, {
-                        className: `text-xl transition-all duration-300 ease-in-out ${open ? 'mr-0 md:mr-3' : 'mb-0'} ${
+                        className: `text-xl transition-all duration-300 ease-in-out ${
+                          open ? "mr-0 md:mr-3" : "mb-0"
+                        } ${
                           location.pathname === item.path
                             ? "text-sky-600"
                             : "text-sky-400"
@@ -190,7 +213,9 @@ const Sidebar: React.FC = () => {
       </div> */}
       {/* Toggle button: top right when expanded, top center when collapsed */}
       <button
-        className={`absolute top-4 z-50 p-2 rounded-md bg-white shadow border border-sky-200 text-sky-500 transition-all duration-300 ${open ? 'right-2' : 'left-1/2 -translate-x-1/2'}`}
+        className={`absolute top-4 z-50 p-2 rounded-md bg-white shadow border border-sky-200 text-sky-500 transition-all duration-300 ${
+          open ? "right-2" : "left-1/2 -translate-x-1/2"
+        }`}
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
       >
@@ -198,6 +223,5 @@ const Sidebar: React.FC = () => {
       </button>
     </div>
   );
-
 };
 export default Sidebar;

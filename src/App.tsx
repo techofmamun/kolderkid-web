@@ -29,6 +29,7 @@ import VideosList from "./pages/VideosList";
 import PodcastsList from "./pages/PodcastsList";
 import ApparelsList from "./pages/ApparelsList";
 import PodcastPlayer from "./pages/PodcastPlayer";
+import Breadcrumb from "./components/Breadcrumb";
 
 // Auth guard for protected routes
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -45,7 +46,8 @@ const ProtectedLayout: React.FC = () => (
     <div className="flex min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-200">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-y-auto h-screen">
-        <main className="flex-1">
+        <Breadcrumb />
+        <main className="flex-1 h-full overflow-auto">
           <Outlet />
         </main>
       </div>

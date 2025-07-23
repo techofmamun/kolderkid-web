@@ -22,7 +22,7 @@ const AuthContainer: React.FC = () => {
         }}
       >
         {/* Existing Outlet for child routes */}
-        <div className="h-full w-full flex items-center justify-center  backdrop-blur-sm p-6">
+        <div className="h-full w-full flex items-center justify-center backdrop-blur-sm p-6">
           <div className="flex flex-col items-center w-full max-w-md gap-8">
             <h1 className="text-4xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-[#00B4FF] to-[#FF4D00] bg-clip-text text-transparent text-center">
               KOLDERKID UNIVERSE

@@ -6,10 +6,11 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const Breadcrumb: React.FC = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
-
+  const isHome = pathnames.length === 0;
+  if (isHome) return null;
   return (
     <nav
-      className="flex items-center gap-2 text-sm mb-4"
+      className="flex items-center gap-2 text-sm mb-4 ml-4 mt-4 backdrop-blur-sm bg-transparent"
       aria-label="Breadcrumb"
     >
       <Link to="/" className="text-sky-700 hover:underline font-semibold">
