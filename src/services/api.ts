@@ -1,4 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type {
+  AddToCartRequest,
+  CartResponse,
+  UpdateCartRequest
+} from "./cartTypes";
 
 // --- Types ---
 export interface Profile {
@@ -194,6 +199,27 @@ export const api = createApi({
         body: { type: "product", product_id, type_of_item: 4 },
       }),
     }),
+    // --- Cart Endpoints ---
+    getCart: builder.query<CartResponse, void>({
+      query: () => "cart/list",
+      transformResponse: (response: CartResponse) => response,
+    }),
+    addToCart: builder.mutation<CartResponse, AddToCartRequest>({
+      query: (body) => ({
+        url: "cart/add",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: CartResponse) => response,
+    }),
+    updateCart: builder.mutation<CartResponse, UpdateCartRequest>({
+      query: (body) => ({
+        url: "cart/update",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: CartResponse) => response,
+    }),
   }),
 });
 
@@ -214,4 +240,7 @@ export const {
   useGetRelatedAudiosQuery,
   useSubscribeMutation,
   useBuyApparelMutation,
+  useGetCartQuery,
+  useAddToCartMutation,
+  useUpdateCartMutation,
 } = api;

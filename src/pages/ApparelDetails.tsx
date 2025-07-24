@@ -1,11 +1,14 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
-import { useGetApparelByIdQuery } from "../services/api";
+import { useGetApparelByIdQuery, useAddToCartMutation } from "../services/api";
 
 const ApparelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = useGetApparelByIdQuery(id!);
+  const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
+  const [quantity, setQuantity] = React.useState(1);
+  const [feedback, setFeedback] = React.useState<string | null>(null);
 
   if (isLoading) {
     return (
@@ -20,6 +23,16 @@ const ApparelDetails: React.FC = () => {
     );
   }
   const apparel = data;
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ product_id: apparel.id, size: apparel.size, quantity });
+      setFeedback("Added to cart!");
+    } catch {
+      setFeedback("Failed to add to cart.");
+    }
+    setTimeout(() => setFeedback(null), 2000);
+  };
 
   return (
     <PageContainer>
@@ -43,13 +56,30 @@ const ApparelDetails: React.FC = () => {
           <div className="text-gray-600 mt-2">
             {apparel.product_description}
           </div>
-          <div className="flex gap-4 mt-4">
-            <button className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 transition">
-              Add to Cart
+          <div className="flex gap-4 mt-4 items-center">
+            <input
+              type="number"
+              min={1}
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="w-20 border rounded px-2 py-1 text-center"
+              disabled={isAdding}
+            />
+            <button
+              className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 transition"
+              onClick={handleAddToCart}
+              disabled={isAdding}
+            >
+              {isAdding ? "Adding..." : "Add to Cart"}
             </button>
             <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
               Checkout
             </button>
+            {feedback && (
+              <span className="ml-4 text-sm font-semibold text-sky-700">
+                {feedback}
+              </span>
+            )}
           </div>
         </div>
       </div>
