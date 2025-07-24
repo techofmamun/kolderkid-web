@@ -9,7 +9,6 @@ import {
   FaShoppingBag,
   FaHistory,
   FaHeart,
-  FaDownload,
   FaShieldAlt,
   FaFileAlt,
   FaInfoCircle,
@@ -45,11 +44,11 @@ const navItems = [
     path: "/favourites",
     icon: <FaHeart className="text-sky-400 text-xl mr-3" />,
   },
-  {
-    name: "Downloads",
-    path: "/downloads",
-    icon: <FaDownload className="text-sky-400 text-xl mr-3" />,
-  },
+  // {
+  //   name: "Downloads",
+  //   path: "/downloads",
+  //   icon: <FaDownload className="text-sky-400 text-xl mr-3" />,
+  // },
   {
     name: "Privacy Policy",
     path: "/privacy-policy",

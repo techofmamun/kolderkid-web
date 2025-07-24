@@ -8,7 +8,6 @@ const Profile: React.FC = () => {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl font-bold text-sky-700 mb-6">Profile</h1>
       {isLoading ? (
         <div className="text-sky-700">Loading...</div>
       ) : profile ? (
