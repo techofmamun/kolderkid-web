@@ -12,7 +12,7 @@ import AuthContainer from "./pages/AuthContainer";
 import Cart from "./pages/Cart";
 import DeleteAccount from "./pages/DeleteAccount";
 import Downloads from "./pages/Downloads";
-import Favourites from "./pages/Favourites";
+import FavouritesList from "./pages/FavouritesList";
 import History from "./pages/History";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -79,7 +79,7 @@ const App: React.FC = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="cart" element={<Cart />} />
           <Route path="history" element={<History />} />
-          <Route path="favourites" element={<Favourites />} />
+          <Route path="favourites" element={<FavouritesList />} />
           <Route path="downloads" element={<Downloads />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<Terms />} />
