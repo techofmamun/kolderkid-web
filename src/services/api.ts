@@ -191,12 +191,14 @@ export const api = createApi({
     }),
     buyApparel: builder.mutation<
       { status: boolean; data?: { payment_url?: string } },
-      { product_id: number }
+      { product_id: number; type?: string }
     >({
-      query: ({ product_id }) => ({
+      query: ({ product_id, type }) => ({
         url: "checkoutsession",
         method: "POST",
-        body: { type: "product", product_id, type_of_item: 4 },
+        body: type === 'cart'
+          ? { type: 'cart' }
+          : { type: "product", product_id, type_of_item: 4 },
       }),
     }),
     // --- Cart Endpoints ---

@@ -30,4 +30,5 @@ export interface AddToCartRequest {
 export interface UpdateCartRequest {
   cart_id: number;
   quantity: number;
+  action?: 'increment' | 'decrement' | 'set';
 }
