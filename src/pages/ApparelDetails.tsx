@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
-import { useGetApparelByIdQuery, useAddToCartMutation } from "../services/api";
+import {
+  useGetApparelByIdQuery,
+  useAddToCartMutation,
+  useBuyApparelMutation,
+} from "../services/api";
 
 const ApparelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -9,7 +13,66 @@ const ApparelDetails: React.FC = () => {
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
   const [quantity, setQuantity] = React.useState(1);
   const [feedback, setFeedback] = React.useState<string | null>(null);
+  const [buyNow, { isLoading: isBuying }] = useBuyApparelMutation();
+  const paymentWindowRef = useRef<Window | null>(null);
+  const paymentPollRef = useRef<number | null>(null);
 
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ product_id: apparel.id, size: apparel.size, quantity });
+      setFeedback("Added to cart!");
+    } catch {
+      setFeedback("Failed to add to cart.");
+    }
+    setTimeout(() => setFeedback(null), 2000);
+  };
+
+  const handleBuyNow = async () => {
+    try {
+      const response = await buyNow({ product_id: apparel.id }).unwrap();
+      if (response.data?.payment_url) {
+        paymentWindowRef.current = window.open(
+          response.data.payment_url,
+          "_blank"
+        );
+      }
+    } catch {
+      setFeedback("Failed to initiate purchase.");
+    }
+  };
+  useEffect(() => {
+    function handleMessage(event: MessageEvent) {
+      // Optionally check event.origin for security
+      if (typeof event.data === "string") {
+        if (event.data.includes("payment-success")) {
+          setFeedback("Payment successful!");
+        } else if (event.data.includes("payment-cancel")) {
+          setFeedback("Payment cancelled.");
+        }
+      }
+    }
+    window.addEventListener("message", handleMessage);
+
+    // Fallback: poll for window.closed
+    paymentPollRef.current = window.setInterval(() => {
+      if (paymentWindowRef.current && paymentWindowRef.current.closed) {
+        // Optionally, check payment status via API here
+        setFeedback("Payment cancelled.");
+        paymentWindowRef.current = null;
+        if (paymentPollRef.current) {
+          clearInterval(paymentPollRef.current);
+          paymentPollRef.current = null;
+        }
+      }
+    }, 1000);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+      if (paymentPollRef.current) {
+        clearInterval(paymentPollRef.current);
+      }
+    };
+  }, []);
   if (isLoading) {
     return (
       <div className="text-center py-10 text-sky-700 font-bold">Loading...</div>
@@ -23,17 +86,6 @@ const ApparelDetails: React.FC = () => {
     );
   }
   const apparel = data;
-
-  const handleAddToCart = async () => {
-    try {
-      await addToCart({ product_id: apparel.id, size: apparel.size, quantity });
-      setFeedback("Added to cart!");
-    } catch {
-      setFeedback("Failed to add to cart.");
-    }
-    setTimeout(() => setFeedback(null), 2000);
-  };
-
   return (
     <PageContainer>
       <div className="flex flex-col md:flex-row gap-6 items-center justify-center p-6 bg-white rounded-lg shadow-lg">
@@ -72,8 +124,11 @@ const ApparelDetails: React.FC = () => {
             >
               {isAdding ? "Adding..." : "Add to Cart"}
             </button>
-            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-              Checkout
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+              onClick={handleBuyNow}
+            >
+              {isBuying ? "Processing..." : "Buy Now"}
             </button>
             {feedback && (
               <span className="ml-4 text-sm font-semibold text-sky-700">

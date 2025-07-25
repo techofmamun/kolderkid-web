@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   AddToCartRequest,
   CartResponse,
-  UpdateCartRequest
+  UpdateCartRequest,
 } from "./cartTypes";
 
 // --- Types ---
@@ -191,14 +191,16 @@ export const api = createApi({
     }),
     buyApparel: builder.mutation<
       { status: boolean; data?: { payment_url?: string } },
-      { product_id: number; type?: string }
+      { product_id: number }
     >({
-      query: ({ product_id, type }) => ({
+      query: ({ product_id }) => ({
         url: "checkoutsession",
         method: "POST",
-        body: type === 'cart'
-          ? { type: 'cart' }
-          : { type: "product", product_id, type_of_item: 4 },
+        body: {
+          type: "product",
+          product_id,
+          type_of_item: 4,
+        },
       }),
     }),
     // --- Cart Endpoints ---
@@ -221,6 +223,16 @@ export const api = createApi({
         body,
       }),
       transformResponse: (response: CartResponse) => response,
+    }),
+    checkoutCart: builder.mutation<
+      { status: boolean; data?: { payment_url?: string } },
+      { product_id?: number }
+    >({
+      query: ({ product_id }) => ({
+        url: "checkoutsession",
+        method: "POST",
+        body: { type: "cart", product_id },
+      }),
     }),
   }),
 });
@@ -245,4 +257,5 @@ export const {
   useGetCartQuery,
   useAddToCartMutation,
   useUpdateCartMutation,
+  useCheckoutCartMutation,
 } = api;

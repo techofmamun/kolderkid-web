@@ -120,7 +120,7 @@ const Sidebar: React.FC = () => {
           </h1>
         )}
       </div>
-      <div className="flex-1 w-full overflow-y-auto max-h-[calc(100vh-12rem)]">
+      <div className="flex-1 w-full overflow-y-auto max-h-[74vh]">
         <nav className="w-full p-2 md:p-6">
           <ul className="space-y-2">
             {navItems.map((item) => {
