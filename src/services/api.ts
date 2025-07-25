@@ -6,6 +6,14 @@ import type {
 } from "./cartTypes";
 
 // --- Types ---
+
+export interface PurchaseItem {
+  id: number;
+  display_title: string;
+  thumbnail: string;
+  created_order_date_time: string;
+  payment: number;
+}
 export interface Profile {
   id: number;
   firstname: string;
@@ -240,6 +248,10 @@ export const api = createApi({
         body: { type: "cart", product_id },
       }),
     }),
+    getPurchases: builder.query<{ data: PurchaseItem[] }, void>({
+      query: () => "getpurchasing",
+      transformResponse: (response: { data: PurchaseItem[] }) => response,
+    }),
   }),
 });
 
@@ -264,4 +276,5 @@ export const {
   useAddToCartMutation,
   useUpdateCartMutation,
   useCheckoutCartMutation,
+  useGetPurchasesQuery,
 } = api;
