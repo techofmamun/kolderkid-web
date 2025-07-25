@@ -3,11 +3,10 @@ import { useParams } from "react-router-dom";
 import Breadcrumb from "../components/Breadcrumb";
 import RelatedCard from "../components/RelatedCard";
 import {
-  useDownloadAudioMutation,
   useGetMediaDetailsQuery,
-  useGetPodcastsQuery,
-  useLikeAudioMutation
+  useGetPodcastsQuery
 } from "../services/api";
+import LikeButton from "./LikeButton";
 
 const PodcastPlayer: React.FC = () => {
   const { id } = useParams();
@@ -16,23 +15,21 @@ const PodcastPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const [likeAudio] = useLikeAudioMutation();
-  const [downloadAudio] = useDownloadAudioMutation();
   // Fetch audio details from API
-  const { data: track, isLoading } = useGetMediaDetailsQuery({
+  const {
+    data: track,
+    isLoading,
+    refetch,
+  } = useGetMediaDetailsQuery({
     filter: 1,
     id: Number(id),
   });
   // Fetch related audios (using podcasts query)
-  const { data: related = [], isLoading: relatedLoading } = useGetPodcastsQuery({
-    page: 1,
-  });
-
-  useEffect(() => {
-    if (!track) return;
-    setLiked(track.favourite || false);
-  }, [track]);
+  const { data: related = [], isLoading: relatedLoading } = useGetPodcastsQuery(
+    {
+      page: 1,
+    }
+  );
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -88,26 +85,16 @@ const PodcastPlayer: React.FC = () => {
     }
   };
 
-  const handleLike = async () => {
-    setLiked((l) => !l);
-    try {
-      await likeAudio({ filter: 1, id: track.id });
-    } catch {
-      setLiked((l) => !l); // Revert like state on error
-      console.error("Like failed");
-    }
-  };
-
-  const handleDownload = async () => {
-    try {
-      const res = await downloadAudio({ id: track.id }).unwrap();
-      if (res.status) {
-        window.open(track.file, "_blank");
-      }
-    } catch {
-      console.error("Download failed");
-    }
-  };
+  // const handleDownload = async () => {
+  //   try {
+  //     const res = await downloadAudio({ id: track.id }).unwrap();
+  //     if (res.status) {
+  //       window.open(track.file, "_blank");
+  //     }
+  //   } catch {
+  //     console.error("Download failed");
+  //   }
+  // };
 
   const handleShare = () => {
     navigator.share?.({
@@ -229,7 +216,7 @@ const PodcastPlayer: React.FC = () => {
               <path d="M12 2v14" />
             </svg>
           </button>
-          <button
+          {/* <button
             onClick={handleDownload}
             aria-label="Download"
             className="hover:text-sky-400 transition"
@@ -245,23 +232,13 @@ const PodcastPlayer: React.FC = () => {
               <path d="M12 5v14" />
               <path d="M19 12l-7 7-7-7" />
             </svg>
-          </button>
-          <button
-            onClick={handleLike}
-            aria-label="Favourite"
-            className="hover:scale-110 transition"
-          >
-            <svg
-              width="28"
-              height="28"
-              fill={liked ? "#ef4444" : "none"}
-              stroke="white"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
+          </button> */}
+          <LikeButton
+            type_of_item={track.category_id}
+            item_id={track.id}
+            isLiked={track.favourite || false}
+            refetch={refetch}
+          />
         </div>
         {showAlert && (
           <div className="mt-8 p-4 bg-sky-900/80 text-white rounded-2xl text-center shadow-xl">

@@ -10,11 +10,10 @@ import RelatedCard from "../components/RelatedCard";
 import SubscribeNowButton from "../components/SubscribeNowButton";
 import type { MediaItem } from "../services/api";
 import {
-  useDownloadAudioMutation,
   useGetMediaDetailsQuery,
-  useGetVideosQuery,
-  useLikeAudioMutation
+  useGetVideosQuery
 } from "../services/api";
+import LikeButton from "./LikeButton";
 
 const VideoPlayer: React.FC = () => {
   const { id } = useParams();
@@ -23,18 +22,15 @@ const VideoPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
-  const [liked, setLiked] = useState(false);
   // Reuse getAudioDetailsQuery for video details with filter=2
-  const { data: video, isLoading } = useGetMediaDetailsQuery({
+  const {
+    data: video,
+    isLoading,
+    refetch,
+  } = useGetMediaDetailsQuery({
     filter: 2,
     id: Number(id),
   });
-  const [likeVideo] = useLikeAudioMutation();
-  const [downloadVideo] = useDownloadAudioMutation();
-  useEffect(() => {
-    if (!video) return;
-    setLiked(video.favourite || false);
-  }, [video]);
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -46,6 +42,8 @@ const VideoPlayer: React.FC = () => {
     return () => {
       vid.removeEventListener("timeupdate", updateTime);
       vid.removeEventListener("loadedmetadata", updateDuration);
+      // Pause video on unmount
+      vid.pause();
     };
   }, [video]);
 
@@ -124,16 +122,16 @@ const VideoPlayer: React.FC = () => {
 
   // Like logic handled inline in button below
 
-  const handleDownload = async () => {
-    try {
-      const res = await downloadVideo({ id: video.id }).unwrap();
-      if (res.status) {
-        window.open(video.file, "_blank");
-      }
-    } catch {
-      console.error("Download failed");
-    }
-  };
+  // const handleDownload = async () => {
+  //   try {
+  //     const res = await downloadVideo({ id: video.id }).unwrap();
+  //     if (res.status) {
+  //       window.open(video.file, "_blank");
+  //     }
+  //   } catch {
+  //     console.error("Download failed");
+  //   }
+  // };
 
   const handleShare = () => {
     navigator.share?.({
@@ -153,6 +151,8 @@ const VideoPlayer: React.FC = () => {
             poster={video.thumbnail}
             className="w-full h-96 object-cover bg-black"
             autoPlay
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
             onDoubleClick={() => {
               const vid = videoRef.current;
               if (vid) {
@@ -282,7 +282,7 @@ const VideoPlayer: React.FC = () => {
               <path d="M12 2v14" />
             </svg>
           </button>
-          <button
+          {/* <button
             onClick={handleDownload}
             aria-label="Download"
             className="hover:text-sky-400 transition"
@@ -298,31 +298,13 @@ const VideoPlayer: React.FC = () => {
               <path d="M12 5v14" />
               <path d="M19 12l-7 7-7-7" />
             </svg>
-          </button>
-          <button
-            onClick={async () => {
-              setLiked((l) => !l);
-              try {
-                if (video) await likeVideo({ filter: 2, id: video.id });
-              } catch {
-                setLiked((l) => !l); // Revert like state on error
-                console.error("Like failed");
-              }
-            }}
-            aria-label="Favourite"
-            className="hover:scale-110 transition"
-          >
-            <svg
-              width="28"
-              height="28"
-              fill={liked ? "#ef4444" : "none"}
-              stroke="black"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
+          </button> */}
+          <LikeButton
+            type_of_item={video.category_id}
+            item_id={video.id}
+            isLiked={video.favourite || false}
+            refetch={refetch}
+          />
         </div>
         {/* Buy Now Button (only if not subscribed) */}
         {!video?.subscription && <SubscribeNowButton />}

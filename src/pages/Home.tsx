@@ -9,6 +9,7 @@ import {
   useGetPodcastsQuery,
   useGetVideosQuery,
   useLazyGetMediaDetailsQuery,
+  type Banner,
   type Item,
 } from "../services/api";
 
@@ -95,10 +96,14 @@ const ItemCard: React.FC<ItemCardProps & { filter: number }> = ({
   );
   return card;
 };
-const CarouselBanner = () => {
-  const { data: banners, isLoading: loadingBanner } = useGetBannerQuery();
+const CarouselBanner = ({
+  loadingBanner,
+  banners,
+}: {
+  loadingBanner: boolean;
+  banners: Banner[] | null | undefined;
+}) => {
   const [bannerIdx, setBannerIdx] = useState(0);
-
   useEffect(() => {
     if (!banners || banners.length === 0) return;
     const timer = setTimeout(() => {
@@ -175,11 +180,11 @@ const Home: React.FC = () => {
   const { data: videoData } = useGetVideosQuery({});
   const { data: podcastData } = useGetPodcastsQuery({});
   const { data: apparelsData } = useGetApparelsQuery({});
-
+  const { data: banners, isLoading: loadingBanner } = useGetBannerQuery();
   return (
     <PageContainer>
       {/* Banner */}
-      <CarouselBanner />
+      <CarouselBanner loadingBanner={loadingBanner} banners={banners} />
 
       {/* Horizontal Scroll Sections */}
 

@@ -9,10 +9,11 @@ import {
   useAddToCartMutation,
   useBuyApparelMutation,
 } from "../services/api";
+import LikeButton from "./LikeButton";
 
 const ApparelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, error } = useGetApparelByIdQuery(id!);
+  const { data, isLoading, error, refetch } = useGetApparelByIdQuery(id!);
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
   const [feedback, setFeedback] = React.useState<string | null>(null);
   const [buyNow, { isLoading: isBuying }] = useBuyApparelMutation();
@@ -127,6 +128,12 @@ const ApparelDetails: React.FC = () => {
             {apparel.product_description}
           </div>
           <div className="flex gap-4 mt-4 items-center flex-wrap">
+            <LikeButton
+              type_of_item={4}
+              item_id={apparel.id}
+              isLiked={apparel.favourite || false}
+              refetch={refetch}
+            />
             <button
               className="border text-sky-600 px-4 py-2 rounded transition hover:scale-105 cursor-pointer"
               onClick={handleAddToCart}

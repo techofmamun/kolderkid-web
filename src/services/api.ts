@@ -1,3 +1,17 @@
+export interface FavouriteItem {
+  id: number;
+  display_title?: string;
+  artist_name?: string;
+  description?: string;
+  category_id?: number;
+  thumbnail?: string;
+  fileType?: string;
+  product_name?: string;
+  product_description?: string;
+  image?: string[];
+  date?: string; // Optional date field for display
+}
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   AddToCartRequest,
@@ -134,14 +148,14 @@ export const api = createApi({
       transformResponse: (response: { data: MediaItem[] }) =>
         response.data?.[0] || null,
     }),
-    likeAudio: builder.mutation<
+    like: builder.mutation<
       { status: boolean },
-      { filter: number; id: number }
+      { type_of_item: number; item_id: number }
     >({
-      query: ({ filter, id }) => ({
+      query: ({ type_of_item, item_id }) => ({
         url: "addorremovefavourite",
         method: "POST",
-        body: { type_of_item: filter, item_id: id },
+        body: { type_of_item, item_id },
       }),
     }),
     downloadAudio: builder.mutation<
@@ -252,6 +266,13 @@ export const api = createApi({
       query: () => "getpurchasing",
       transformResponse: (response: { data: PurchaseItem[] }) => response,
     }),
+    getFavourites: builder.query<{ data: FavouriteItem[] }, void>({
+      query: () => "getfavouriteitems",
+      transformResponse: (response: { data: FavouriteItem[] }) => response,
+      forceRefetch() {
+        return true;
+      },
+    }),
   }),
 });
 
@@ -267,7 +288,7 @@ export const {
   useGetApparelByIdQuery,
   useGetMediaDetailsQuery,
   useLazyGetMediaDetailsQuery,
-  useLikeAudioMutation,
+  useLikeMutation,
   useDownloadAudioMutation,
   useGetRelatedAudiosQuery,
   useSubscribeMutation,
@@ -277,4 +298,5 @@ export const {
   useUpdateCartMutation,
   useCheckoutCartMutation,
   useGetPurchasesQuery,
+  useGetFavouritesQuery,
 } = api;

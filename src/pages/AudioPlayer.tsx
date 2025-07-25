@@ -5,11 +5,10 @@ import PageContainer from "../components/PageContainer";
 import RelatedCard from "../components/RelatedCard";
 import SubscribeNowButton from "../components/SubscribeNowButton";
 import {
-  useDownloadAudioMutation,
   useGetMediaDetailsQuery,
-  useGetMusicQuery,
-  useLikeAudioMutation,
+  useGetMusicQuery
 } from "../services/api";
+import LikeButton from "./LikeButton";
 
 const AudioPlayer: React.FC = () => {
   const { id } = useParams();
@@ -18,12 +17,13 @@ const AudioPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const [likeAudio] = useLikeAudioMutation();
-  const [downloadAudio] = useDownloadAudioMutation();
 
   // Fetch audio details from API
-  const { data: track, isLoading } = useGetMediaDetailsQuery({
+  const {
+    data: track,
+    isLoading,
+    refetch,
+  } = useGetMediaDetailsQuery({
     filter: 1,
     id: Number(id),
   });
@@ -31,11 +31,6 @@ const AudioPlayer: React.FC = () => {
   const { data: related = [], isLoading: relatedLoading } = useGetMusicQuery({
     page: 1,
   });
-
-  useEffect(() => {
-    if (!track) return;
-    setLiked(track.favourite || false);
-  }, [track]);
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -47,6 +42,8 @@ const AudioPlayer: React.FC = () => {
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
+      // Pause audio on unmount
+      audio.pause();
     };
   }, [track]);
 
@@ -91,16 +88,16 @@ const AudioPlayer: React.FC = () => {
     }
   };
 
-  const handleDownload = async () => {
-    try {
-      const res = await downloadAudio({ id: track.id }).unwrap();
-      if (res.status) {
-        window.open(track.file, "_blank");
-      }
-    } catch {
-      console.error("Download failed");
-    }
-  };
+  // const handleDownload = async () => {
+  //   try {
+  //     const res = await downloadAudio({ id: track.id }).unwrap();
+  //     if (res.status) {
+  //       window.open(track.file, "_blank");
+  //     }
+  //   } catch {
+  //     console.error("Download failed");
+  //   }
+  // };
 
   const handleShare = () => {
     navigator.share?.({
@@ -109,7 +106,6 @@ const AudioPlayer: React.FC = () => {
       url: window.location.href,
     });
   };
-
   return (
     <PageContainer>
       <div className="w-full max-w-md mx-auto ">
@@ -131,6 +127,9 @@ const AudioPlayer: React.FC = () => {
           src={track.file}
           preload="metadata"
           className="w-full"
+          autoPlay
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         />
         <div className="flex items-center justify-between w-full mb-2 mt-4">
           <span className="text-sm text-gray-500">
@@ -221,7 +220,7 @@ const AudioPlayer: React.FC = () => {
               <path d="M12 2v14" />
             </svg>
           </button>
-          <button
+          {/* <button
             onClick={handleDownload}
             aria-label="Download"
             className="hover:text-sky-400 transition"
@@ -237,31 +236,13 @@ const AudioPlayer: React.FC = () => {
               <path d="M12 5v14" />
               <path d="M19 12l-7 7-7-7" />
             </svg>
-          </button>
-          <button
-            onClick={async () => {
-              setLiked((l) => !l);
-              try {
-                if (track) await likeAudio({ filter: 1, id: track.id });
-              } catch {
-                setLiked((l) => !l); // Revert like state on error
-                console.error("Like failed");
-              }
-            }}
-            aria-label="Favourite"
-            className="hover:scale-110 transition"
-          >
-            <svg
-              width="28"
-              height="28"
-              fill={liked ? "#ef4444" : "none"}
-              stroke="black"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </button>
+          </button> */}
+          <LikeButton
+            type_of_item={track.category_id}
+            item_id={track.id}
+            isLiked={track.favourite || false}
+            refetch={refetch}
+          />
         </div>
         {/* Buy Now Button (only if not subscribed) */}
         {!track.subscription && <SubscribeNowButton />}
