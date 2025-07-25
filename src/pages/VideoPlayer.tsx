@@ -7,13 +7,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
 import RelatedCard from "../components/RelatedCard";
+import SubscribeNowButton from "../components/SubscribeNowButton";
 import type { MediaItem } from "../services/api";
 import {
   useDownloadAudioMutation,
   useGetMediaDetailsQuery,
   useGetVideosQuery,
-  useLikeAudioMutation,
-  useSubscribeMutation,
+  useLikeAudioMutation
 } from "../services/api";
 
 const VideoPlayer: React.FC = () => {
@@ -31,9 +31,6 @@ const VideoPlayer: React.FC = () => {
   });
   const [likeVideo] = useLikeAudioMutation();
   const [downloadVideo] = useDownloadAudioMutation();
-  const [buy] = useSubscribeMutation();
-  const [buying, setBuying] = useState(false);
-  const [, setShowBuySuccess] = useState(false);
   useEffect(() => {
     if (!video) return;
     setLiked(video.favourite || false);
@@ -328,77 +325,7 @@ const VideoPlayer: React.FC = () => {
           </button>
         </div>
         {/* Buy Now Button (only if not subscribed) */}
-        {!video?.subscription && (
-          <div className="flex items-center justify-center mt-8">
-            <button
-              className="px-8 py-3 rounded-full font-bold text-white relative overflow-hidden shadow-2xl transition disabled:opacity-60 backdrop-blur-xl border border-white/30"
-              style={{
-                background: "linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%)", // sky-400 to sky-500
-                boxShadow: "0 8px 32px 0 rgba(14,165,233,0.15)",
-                border: "1.5px solid rgba(255,255,255,0.25)",
-                position: "relative",
-                zIndex: 1,
-              }}
-              disabled={buying}
-              onClick={async () => {
-                setBuying(true);
-                try {
-                  const res = await buy({
-                    product_id: video.id,
-                    type_of_item: 2,
-                  }).unwrap();
-                  if (res.status && res.data?.payment_url) {
-                    window.open(res.data.payment_url, "_blank");
-                    setShowBuySuccess(true);
-                  }
-                } catch {
-                  alert("Purchase failed. Please try again.");
-                } finally {
-                  setBuying(false);
-                }
-              }}
-            >
-              <span
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: "linear-gradient(120deg, #fff 0%, #a7f3d0 100%)",
-                  opacity: 0.18,
-                  filter: "blur(8px)",
-                  zIndex: 0,
-                }}
-              ></span>
-              <span className="relative z-10 flex items-center gap-2">
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
-                  <rect
-                    x="2"
-                    y="7"
-                    width="20"
-                    height="13"
-                    rx="3"
-                    fill="#fff"
-                    fillOpacity="0.15"
-                  />
-                  <rect
-                    x="2"
-                    y="7"
-                    width="20"
-                    height="13"
-                    rx="3"
-                    stroke="#fff"
-                    strokeWidth="1.5"
-                  />
-                  <path
-                    d="M7 11h10M7 15h6"
-                    stroke="#fff"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                {buying ? "Processing..." : "Subscribe Now"}
-              </span>
-            </button>
-          </div>
-        )}
+        {!video?.subscription && <SubscribeNowButton />}
         {/* Buy Success Modal */}
         {/* {showBuySuccess && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
@@ -433,7 +360,7 @@ const VideoPlayer: React.FC = () => {
         )}
       </div>
       {/* Related Section */}
-      <div className="w-full max-w-3xl mx-auto mt-12">
+      <div className="w-full mx-auto mt-12">
         <h3 className="text-xl font-bold mb-4 text-sky-400">Related Videos</h3>
         {relatedLoading ? (
           <div className="text-center text-sky-400">Loading...</div>
