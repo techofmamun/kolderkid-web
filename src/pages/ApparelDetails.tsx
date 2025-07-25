@@ -88,13 +88,13 @@ const ApparelDetails: React.FC = () => {
   const apparel = data;
   return (
     <PageContainer>
-      <div className="flex flex-col md:flex-row gap-6 items-center justify-center p-6 bg-white rounded-lg shadow-lg">
+      <div className="flex flex-col md:flex-row gap-6 items-center justify-centerbg-white/50 rounded-lg shadow-lg max-w-4xl mx-auto overflow-hidden">
         <img
           src={apparel.image && apparel.image[0]}
           alt={apparel.product_name}
-          className="w-48 h-48 object-cover rounded-lg border"
+          className="size-full object-cover rounded-lg border flex-1 max-w-xs md:max-w-sm"
         />
-        <div className="flex-1 flex flex-col gap-2">
+        <div className="flex-1 flex flex-col gap-2 p-6">
           <h2 className="text-2xl font-bold text-sky-800">
             {apparel.product_name}
           </h2>
@@ -108,7 +108,7 @@ const ApparelDetails: React.FC = () => {
           <div className="text-gray-600 mt-2">
             {apparel.product_description}
           </div>
-          <div className="flex gap-4 mt-4 items-center">
+          <div className="flex gap-4 mt-4 items-center flex-wrap">
             <input
               type="number"
               min={1}
@@ -118,14 +118,14 @@ const ApparelDetails: React.FC = () => {
               disabled={isAdding}
             />
             <button
-              className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 transition"
+              className="border text-sky-600 px-4 py-2 rounded transition hover:scale-105 cursor-pointer"
               onClick={handleAddToCart}
               disabled={isAdding}
             >
               {isAdding ? "Adding..." : "Add to Cart"}
             </button>
             <button
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+              className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 transition hover:scale-105 cursor-pointer"
               onClick={handleBuyNow}
             >
               {isBuying ? "Processing..." : "Buy Now"}
