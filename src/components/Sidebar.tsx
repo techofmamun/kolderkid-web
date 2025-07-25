@@ -4,18 +4,17 @@ import { useAppDispatch } from "../hooks";
 import { api } from "../services/api";
 import logo from "/assets/images/kolderkid-logo.png";
 // import ProfileSidebarSection from "./ProfileSidebarSection";
-import {
-  FaUserCircle,
-  FaShoppingBag,
-  FaHistory,
-  FaHeart,
-  FaShieldAlt,
-  FaFileAlt,
-  FaInfoCircle,
-  FaUserTimes,
-  FaSignOutAlt,
-} from "react-icons/fa";
 import { BiHome } from "react-icons/bi";
+import {
+  FaFileAlt,
+  FaHeart,
+  FaHistory,
+  FaInfoCircle,
+  FaShieldAlt,
+  FaShoppingBag,
+  FaSignOutAlt,
+  FaUserCircle
+} from "react-icons/fa";
 
 const navItems = [
   {
@@ -64,11 +63,11 @@ const navItems = [
     path: "/about",
     icon: <FaInfoCircle className="text-sky-400 text-xl mr-3" />,
   },
-  {
-    name: "Delete Account",
-    path: "/delete-account",
-    icon: <FaUserTimes className="text-sky-400 text-xl mr-3" />,
-  },
+  // {
+  //   name: "Delete Account",
+  //   path: "/delete-account",
+  //   icon: <FaUserTimes className="text-sky-400 text-xl mr-3" />,
+  // },
   {
     name: "Logout",
     path: "/logout",

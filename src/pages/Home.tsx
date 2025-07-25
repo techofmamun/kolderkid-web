@@ -55,7 +55,7 @@ const ItemCard: React.FC<ItemCardProps & { filter: number }> = ({
   };
   const card = (
     <button
-      className="bg-white rounded-lg shadow p-4 flex flex-col items-center min-w-[140px] justify-between hover:scale-105 transition cursor-pointer"
+      className="rounded-lg shadow-xs p-4 flex flex-col items-center min-w-[160px] justify-between hover:scale-105 transition cursor-pointer border border-sky-200/40 backdrop-blur-sm bg-white/50"
       onClick={handleClick}
       tabIndex={0}
       role="button"

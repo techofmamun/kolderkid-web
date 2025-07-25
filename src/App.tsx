@@ -43,11 +43,11 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // Protected layout for authenticated routes
 const ProtectedLayout: React.FC = () => (
   <RequireAuth>
-    <div className="flex min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-200">
+    <div className="flex min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-200 ">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-y-auto h-screen">
         <Breadcrumb />
-        <main className="flex-1 h-full overflow-auto">
+        <main className="flex-1 h-full overflow-auto ">
           <Outlet />
         </main>
       </div>

@@ -19,7 +19,18 @@ const RelatedCard: React.FC<{ track: RelatedTrack }> = ({ track }) => {
     (track.fileType !== "video" && location.pathname === `/musics/${track.id}`);
 
   return (
-    <div className="min-w-[200px] bg-white/20 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg p-3 flex flex-col items-center hover:scale-105 transition relative">
+    <div
+      className="min-w-[200px]  rounded-2xl shadow-lg p-3 flex flex-col items-center hover:scale-105 transition relative border border-sky-200/40 backdrop-blur-sm bg-white/50 cursor-pointer"
+      onClick={() =>
+        navigate(
+          track.fileType === "video"
+            ? `/videos/${track.id}`
+            : `/musics/${track.id}`
+        )
+      }
+      aria-label={track.display_title}
+      role="button"
+    >
       <img
         src={track.thumbnail}
         alt={track.display_title}
@@ -37,20 +48,6 @@ const RelatedCard: React.FC<{ track: RelatedTrack }> = ({ track }) => {
         <p className="text-xs text-gray-500 text-center line-clamp-2 mb-2">
           {track.description}
         </p>
-      )}
-      {!isNowPlaying && (
-        <button
-          onClick={() =>
-            navigate(
-              track.fileType === "video"
-                ? `/videos/${track.id}`
-                : `/musics/${track.id}`
-            )
-          }
-          className="mt-auto px-3 py-1 bg-sky-500 rounded text-white text-xs font-bold hover:bg-sky-600 transition hover:scale-105 cursor-pointer"
-        >
-          {track.fileType === "video" ? "Watch" : "Listen"}
-        </button>
       )}
     </div>
   );

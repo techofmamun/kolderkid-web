@@ -21,7 +21,7 @@ const Breadcrumb: React.FC = () => {
         const isLast = idx === pathnames.length - 1;
         return isLast ? (
           <span key={to} className="text-gray-500">
-          /{capitalize(decodeURIComponent(value))}
+            {"-> "} {capitalize(decodeURIComponent(value))}
           </span>
         ) : (
           <span key={to}>

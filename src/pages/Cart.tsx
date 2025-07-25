@@ -9,45 +9,24 @@ import {
 const Cart: React.FC = () => {
   const { data, isLoading, error, refetch } = useGetCartQuery();
   const [updateCart, { isLoading: isUpdating }] = useUpdateCartMutation();
-  const [quantities, setQuantities] = React.useState<Record<number, number>>(
-    {}
-  );
   const [feedback, setFeedback] = React.useState<string | null>(null);
   const paymentWindowRef = useRef<Window | null>(null);
   const paymentPollRef = useRef<number | null>(null);
   const [checkoutCart, { isLoading: isCheckingOut }] =
     useCheckoutCartMutation();
-  React.useEffect(() => {
-    if (data?.data?.cart_items) {
-      const q: Record<number, number> = {};
-      data.data.cart_items.forEach((item) => {
-        q[item.cart_id] = item.quantity;
-      });
-      setQuantities(q);
-    }
-  }, [data]);
-
   const handleUpdate = async (
     cartId: number,
     action: "set" | "increment" | "decrement"
   ) => {
-    const newQty = quantities[cartId];
     const items = data?.data?.cart_items ?? [];
     const item = items.find((i) => i.cart_id === cartId);
     try {
       if ((action === "increment" || action === "decrement") && item) {
-        // Send product_id and action for increment/decrement
-        // @ts-expect-error: product_id is not in UpdateCartRequest but required by API
-        const res = await updateCart({ product_id: item.product_id, action });
-        setFeedback(res?.data?.message || "Cart updated");
-      } else if (action === "set") {
-        // Send cart_id and quantity for direct set
-        const res = await updateCart({ cart_id: cartId, quantity: newQty });
-        setFeedback(res?.data?.message || "Cart updated");
+        await updateCart({ product_id: item.product_id, action });
       }
       refetch();
     } catch {
-      setFeedback("Failed to update cart.");
+      // Handle error
     }
     setTimeout(() => setFeedback(null), 2000);
   };
@@ -145,12 +124,12 @@ const Cart: React.FC = () => {
                 <button
                   className="bg-gray-200 px-2 py-1 rounded text-gray-500 hover:scale-105 transition cursor-pointer disabled:opacity-50"
                   onClick={() => handleUpdate(item.cart_id, "decrement")}
-                  disabled={isUpdating || quantities[item.cart_id] <= 1}
+                  disabled={isUpdating}
                 >
-                  -
+                  {item.quantity > 1 ? "-" : "x"}
                 </button>
                 <span className="px-3 font-bold text-gray-500 ">
-                  {quantities[item.cart_id] ?? item.quantity}
+                  {item.quantity}
                 </span>
                 <button
                   className="bg-gray-200 px-2 py-1 rounded text-gray-500 hover:scale-105 transition cursor-pointer disabled:opacity-50"
@@ -181,9 +160,12 @@ const Cart: React.FC = () => {
               </div>
             ))}
           </div>
-          <div className="flex justify-between text-xl font-bold text-white mt-6">
-            <span>Total Amount:</span>
-            <span>${data.data.total_price?.toFixed(2)}</span>
+          <div>
+            <hr className="border-white/20 my-3" />
+            <div className="flex justify-between text-xl font-bold text-white">
+              <span>Total Amount:</span>
+              <span>${data.data.total_price?.toFixed(2)}</span>
+            </div>
           </div>
         </div>
         {feedback && (

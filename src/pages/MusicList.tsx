@@ -53,7 +53,7 @@ const MusicList: React.FC = () => {
           <Link
             to={`/music/${item.id}`}
             key={item.id}
-            className="bg-white rounded-lg shadow p-4 flex flex-col items-center hover:scale-105 transition"
+            className="bg-white/50 rounded-lg shadow p-4 flex flex-col items-center hover:scale-105 transition"
           >
             <img
               src={item.thumbnail}

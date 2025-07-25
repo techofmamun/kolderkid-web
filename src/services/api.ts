@@ -207,6 +207,10 @@ export const api = createApi({
     getCart: builder.query<CartResponse, void>({
       query: () => "cart/list",
       transformResponse: (response: CartResponse) => response,
+      forceRefetch() {
+        return true;
+      },
+      // providesTags: ['Cart'],
     }),
     addToCart: builder.mutation<CartResponse, AddToCartRequest>({
       query: (body) => ({
@@ -215,6 +219,7 @@ export const api = createApi({
         body,
       }),
       transformResponse: (response: CartResponse) => response,
+      // invalidatesTags: ['Cart'],
     }),
     updateCart: builder.mutation<CartResponse, UpdateCartRequest>({
       query: (body) => ({
@@ -223,6 +228,7 @@ export const api = createApi({
         body,
       }),
       transformResponse: (response: CartResponse) => response,
+      // invalidatesTags: ['Cart'],
     }),
     checkoutCart: builder.mutation<
       { status: boolean; data?: { payment_url?: string } },

@@ -9,7 +9,7 @@ const Profile: React.FC = () => {
   return (
     <PageContainer>
       {isLoading ? (
-        <div className="text-sky-700">Loading...</div>
+        <div className="text-sky-700 text-center">Loading...</div>
       ) : profile ? (
         <div className="flex flex-col items-center gap-4">
           <img

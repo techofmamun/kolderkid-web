@@ -1,4 +1,7 @@
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import RelatedApparelCard from "../components/RelatedApparelCard";
+import { useGetApparelsQuery } from "../services/api";
 import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
 import {
@@ -11,15 +14,23 @@ const ApparelDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, error } = useGetApparelByIdQuery(id!);
   const [addToCart, { isLoading: isAdding }] = useAddToCartMutation();
-  const [quantity, setQuantity] = React.useState(1);
   const [feedback, setFeedback] = React.useState<string | null>(null);
   const [buyNow, { isLoading: isBuying }] = useBuyApparelMutation();
   const paymentWindowRef = useRef<Window | null>(null);
   const paymentPollRef = useRef<number | null>(null);
+  const navigate = useNavigate();
+  const apparel = data;
+  // Fetch related apparels (excluding current)
+  const { data: relatedApparels = [], isLoading: relatedLoading } =
+    useGetApparelsQuery({});
+  const filteredRelated = relatedApparels
+    .filter((item) => item.id !== apparel?.id)
+    .slice(0, 10);
 
   const handleAddToCart = async () => {
+    if (!apparel) return;
     try {
-      await addToCart({ product_id: apparel.id, size: apparel.size, quantity });
+      await addToCart({ product_id: apparel.id, size: apparel.size });
       setFeedback("Added to cart!");
     } catch {
       setFeedback("Failed to add to cart.");
@@ -28,6 +39,7 @@ const ApparelDetails: React.FC = () => {
   };
 
   const handleBuyNow = async () => {
+    if (!apparel) return;
     try {
       const response = await buyNow({ product_id: apparel.id }).unwrap();
       if (response.data?.payment_url) {
@@ -85,7 +97,13 @@ const ApparelDetails: React.FC = () => {
       </div>
     );
   }
-  const apparel = data;
+  if (!apparel) {
+    return (
+      <div className="text-center py-10 text-red-600 font-bold">
+        Apparel not found.
+      </div>
+    );
+  }
   return (
     <PageContainer>
       <div className="flex flex-col md:flex-row gap-6 items-center justify-centerbg-white/50 rounded-lg shadow-lg max-w-4xl mx-auto overflow-hidden">
@@ -109,14 +127,6 @@ const ApparelDetails: React.FC = () => {
             {apparel.product_description}
           </div>
           <div className="flex gap-4 mt-4 items-center flex-wrap">
-            <input
-              type="number"
-              min={1}
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="w-20 border rounded px-2 py-1 text-center"
-              disabled={isAdding}
-            />
             <button
               className="border text-sky-600 px-4 py-2 rounded transition hover:scale-105 cursor-pointer"
               onClick={handleAddToCart}
@@ -137,6 +147,27 @@ const ApparelDetails: React.FC = () => {
             )}
           </div>
         </div>
+      </div>
+      {/* Related Apparels Section */}
+      <div className="mt-auto">
+        <h3 className="text-xl font-bold text-sky-800 mb-4">
+          Related Apparels
+        </h3>
+        {relatedLoading ? (
+          <div className="text-sky-600">Loading...</div>
+        ) : filteredRelated.length ? (
+          <div className="flex gap-6 overflow-x-auto pb-2 hide-scrollbar px-4">
+            {filteredRelated.map((item) => (
+              <RelatedApparelCard
+                key={item.id}
+                apparel={item}
+                onClick={() => navigate(`/apparels/${item.id}`)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-gray-500">No related apparels found.</div>
+        )}
       </div>
     </PageContainer>
   );
