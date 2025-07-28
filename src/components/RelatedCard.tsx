@@ -20,7 +20,7 @@ const RelatedCard: React.FC<{ track: RelatedTrack }> = ({ track }) => {
 
   return (
     <div
-      className="min-w-[200px]  rounded-2xl shadow-lg p-3 flex flex-col items-center hover:scale-105 transition relative border border-sky-200/40 backdrop-blur-sm bg-white/50 cursor-pointer"
+      className="w-[200px]  rounded-2xl shadow-lg p-3 flex flex-col items-center hover:scale-105 transition relative border border-sky-200/40 backdrop-blur-sm bg-white/50 cursor-pointer"
       onClick={() =>
         navigate(
           track.fileType === "video"
