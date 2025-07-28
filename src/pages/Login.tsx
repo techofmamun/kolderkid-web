@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../services/api";
-import Button from "../components/Button";
 import { Link } from "react-router-dom";
+import Button from "../components/Button";
+import { useLoginMutation } from "../services/api";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [login, { isLoading }] = useLoginMutation();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +15,7 @@ const Login: React.FC = () => {
     try {
       const res = await login({ email, password }).unwrap();
       localStorage.setItem("token", res.data);
-      navigate("/");
+      window.location.href = "/";
     } catch (err: any) {
       setError(err?.data?.message || "Login failed");
     }

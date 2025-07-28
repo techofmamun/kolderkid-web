@@ -62,7 +62,7 @@ const OnboardingSlider: React.FC = () => {
           />
         ))}
         <div className="flex flex-col items-center max-w-xl w-full mt-auto backdrop-blur-lg p-6 rounded-3xl shadow-lg relative z-10 mb-2">
-          <h2 className="text-3xl md:text-4xl font-bold text-sky-800 mb-4 text-center font-poppins">
+          <h2 className="text-3xl md:text-4xl font-bold text-sky-700 mb-4 text-center font-poppins">
             {onboardingData[current].heading}
           </h2>
           <p className="text-lg md:text-xl text-sky-600 mb-6 text-center font-poppins">

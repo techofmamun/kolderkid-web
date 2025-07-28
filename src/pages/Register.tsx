@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRegisterMutation } from "../services/api";
-import Button from "../components/Button";
 import { Link } from "react-router-dom";
+import Button from "../components/Button";
+import { useRegisterMutation } from "../services/api";
 
 const Register: React.FC = () => {
   const [firstname, setFirstname] = useState("");
@@ -11,8 +10,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [register, { isLoading }] = useRegisterMutation();
-  const navigate = useNavigate();
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -24,7 +22,7 @@ const Register: React.FC = () => {
         password,
       }).unwrap();
       localStorage.setItem("token", res.data);
-      navigate("/");
+      window.location.href = "/";
     } catch (err: any) {
       setError(err?.data?.message || "Registration failed");
     }

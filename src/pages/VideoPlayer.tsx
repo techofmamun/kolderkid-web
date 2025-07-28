@@ -6,13 +6,9 @@ function formatTime(time: number) {
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
-import RelatedCard from "../components/RelatedCard";
+import RelatedSection from "../components/RelatedCard";
 import SubscribeNowButton from "../components/SubscribeNowButton";
-import type { MediaItem } from "../services/api";
-import {
-  useGetMediaDetailsQuery,
-  useGetVideosQuery
-} from "../services/api";
+import { useGetMediaDetailsQuery, useGetVideosQuery } from "../services/api";
 import LikeButton from "./LikeButton";
 
 const VideoPlayer: React.FC = () => {
@@ -119,19 +115,6 @@ const VideoPlayer: React.FC = () => {
       );
     }
   };
-
-  // Like logic handled inline in button below
-
-  // const handleDownload = async () => {
-  //   try {
-  //     const res = await downloadVideo({ id: video.id }).unwrap();
-  //     if (res.status) {
-  //       window.open(video.file, "_blank");
-  //     }
-  //   } catch {
-  //     console.error("Download failed");
-  //   }
-  // };
 
   const handleShare = () => {
     navigator.share?.({
@@ -342,22 +325,11 @@ const VideoPlayer: React.FC = () => {
         )}
       </div>
       {/* Related Section */}
-      <div className="w-full mx-auto mt-12">
-        <h3 className="text-xl font-bold mb-4 text-sky-400">Related Videos</h3>
-        {relatedLoading ? (
-          <div className="text-center text-sky-400">Loading...</div>
-        ) : related.length === 0 ? (
-          <div className="text-center text-gray-400">
-            No related videos found.
-          </div>
-        ) : (
-          <div className="flex gap-6 overflow-x-auto pb-2 hide-scrollbar">
-            {related.map((item: MediaItem) => (
-              <RelatedCard key={item.id} track={item} />
-            ))}
-          </div>
-        )}
-      </div>
+      <RelatedSection
+        related={related}
+        relatedLoading={relatedLoading}
+        title={"Related Videos"}
+      />
     </PageContainer>
   );
 };

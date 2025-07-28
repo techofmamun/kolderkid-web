@@ -2,6 +2,7 @@ import React from "react";
 import OnboardingSlider from "./OnboardingSlider";
 import { Outlet } from "react-router-dom";
 import logo from "/assets/images/splash.png";
+import { Link } from "react-router-dom";
 
 const AuthContainer: React.FC = () => {
   return (
@@ -29,6 +30,12 @@ const AuthContainer: React.FC = () => {
             </h1>
             <div className="bg-white/85  p-8 rounded-xl shadow-md w-full max-w-md">
               <Outlet />
+              <Link
+                to="/"
+                className="text-sky-700 hover:underline mt-4 block text-center"
+              >
+                Back to Home
+              </Link>
             </div>
           </div>
         </div>

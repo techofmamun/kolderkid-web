@@ -1,35 +1,32 @@
 import React from "react";
 import {
   Navigate,
+  Outlet,
   Route,
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
+import Breadcrumb from "./components/Breadcrumb";
 import Sidebar from "./components/Sidebar";
-import { Outlet } from "react-router-dom";
 import About from "./pages/About";
+import ApparelDetails from "./pages/ApparelDetails";
+import ApparelsList from "./pages/ApparelsList";
+import AudioPlayer from "./pages/AudioPlayer";
 import AuthContainer from "./pages/AuthContainer";
 import Cart from "./pages/Cart";
-import DeleteAccount from "./pages/DeleteAccount";
-import Downloads from "./pages/Downloads";
 import FavouritesList from "./pages/FavouritesList";
 import History from "./pages/History";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Logout from "./pages/Logout";
+import MusicList from "./pages/MusicList";
+import PodcastPlayer from "./pages/PodcastPlayer";
+import PodcastsList from "./pages/PodcastsList";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import Terms from "./pages/Terms";
-import AudioPlayer from "./pages/AudioPlayer";
 import VideoPlayer from "./pages/VideoPlayer";
-import ApparelDetails from "./pages/ApparelDetails";
-import MusicList from "./pages/MusicList";
 import VideosList from "./pages/VideosList";
-import PodcastsList from "./pages/PodcastsList";
-import ApparelsList from "./pages/ApparelsList";
-import PodcastPlayer from "./pages/PodcastPlayer";
-import Breadcrumb from "./components/Breadcrumb";
 
 // Auth guard for protected routes
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -56,18 +53,19 @@ const ProtectedLayout: React.FC = () => (
 );
 
 const App: React.FC = () => {
+  const token = localStorage.getItem("token");
   return (
     <Router>
       <Routes>
-        {/* Auth routes with onboarding slider */}
+        {/* Public routes */}
         <Route path="/auth" element={<AuthContainer />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="*" element={<Navigate to="/auth/login" replace />} />
         </Route>
-        {/* Protected layout route */}
+        {!token && <Route path="/" element={<Home />} />}
         <Route element={<ProtectedLayout />}>
-          <Route index element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="musics" element={<MusicList />} />
           <Route path="musics/:id" element={<AudioPlayer />} />
           <Route path="videos" element={<VideosList />} />
@@ -80,13 +78,11 @@ const App: React.FC = () => {
           <Route path="cart" element={<Cart />} />
           <Route path="history" element={<History />} />
           <Route path="favourites" element={<FavouritesList />} />
-          <Route path="downloads" element={<Downloads />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<Terms />} />
           <Route path="about" element={<About />} />
-          <Route path="delete-account" element={<DeleteAccount />} />
-          <Route path="logout" element={<Logout />} />
         </Route>
+        {/* Catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
