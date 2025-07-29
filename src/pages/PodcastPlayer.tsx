@@ -15,7 +15,7 @@ const PodcastPlayer: React.FC = () => {
   const [showAlert, setShowAlert] = useState(false);
   // Fetch audio details from API
   const {
-    data: track,
+    data: podcast,
     isLoading,
     refetch,
   } = useGetMediaDetailsQuery({
@@ -28,7 +28,7 @@ const PodcastPlayer: React.FC = () => {
     filter: 3,
   });
   const related = data?.data || [];
-
+  const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
@@ -40,26 +40,19 @@ const PodcastPlayer: React.FC = () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
     };
-  }, [track]);
+  }, [podcast]);
 
   useEffect(() => {
-    if (!track?.subscription && isPlaying && currentTime >= 15) {
+    if (!podcast?.subscription && isPlaying && currentTime >= 15) {
       audioRef.current?.pause();
       setIsPlaying(false);
       setShowAlert(true);
     }
-  }, [currentTime, isPlaying, track]);
+  }, [currentTime, isPlaying, podcast]);
 
   if (isLoading) {
     return (
       <div className="text-center py-20 text-xl text-sky-700">Loading...</div>
-    );
-  }
-  if (!track) {
-    return (
-      <div className="text-center py-20 text-xl text-sky-700">
-        Podcast not found.
-      </div>
     );
   }
 
@@ -85,8 +78,8 @@ const PodcastPlayer: React.FC = () => {
 
   const handleShare = () => {
     navigator.share?.({
-      title: track.display_title,
-      text: `Listen to this podcast: ${track.display_title}`,
+      title: podcast?.display_title,
+      text: `Listen to this podcast: ${podcast?.display_title}`,
       url: window.location.href,
     });
   };
@@ -103,7 +96,7 @@ const PodcastPlayer: React.FC = () => {
           }}
         >
           <p className="transition-all duration-300 whitespace-pre-line">
-            {track.description}
+            {podcast?.description}
           </p>
         </div>
         <button
@@ -115,29 +108,75 @@ const PodcastPlayer: React.FC = () => {
       </div>
     );
   };
+  if (!podcast) {
+    return (
+      <div className="text-center py-20 text-xl text-sky-700">
+        Video not found.
+      </div>
+    );
+  }
   return (
     <PageContainer>
-      <div className="w-full max-w-md mx-auto ">
+      <div className="w-full max-w-2xl mx-auto">
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
-          <img
-            src={track.thumbnail}
-            alt={track.display_title}
-            className="w-full h-64 object-cover"
-          />
+          {podcast.fileType === "video" ? (
+            <video
+              ref={videoRef}
+              src={podcast.file}
+              poster={podcast.thumbnail}
+              className="w-full h-96 object-cover bg-black"
+              autoPlay
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onDoubleClick={() => {
+                const vid = videoRef.current;
+                if (vid) {
+                  if (vid.requestFullscreen) {
+                    vid.requestFullscreen();
+                  } else if (
+                    (
+                      vid as HTMLVideoElement & {
+                        webkitRequestFullscreen?: () => void;
+                      }
+                    ).webkitRequestFullscreen
+                  ) {
+                    (
+                      vid as HTMLVideoElement & {
+                        webkitRequestFullscreen: () => void;
+                      }
+                    ).webkitRequestFullscreen();
+                  } else if (
+                    (
+                      vid as HTMLVideoElement & {
+                        msRequestFullscreen?: () => void;
+                      }
+                    ).msRequestFullscreen
+                  ) {
+                    (
+                      vid as HTMLVideoElement & {
+                        msRequestFullscreen: () => void;
+                      }
+                    ).msRequestFullscreen();
+                  }
+                }
+              }}
+            />
+          ) : (
+            <audio
+              ref={audioRef}
+              src={podcast.file}
+              preload="metadata"
+              className="w-full"
+              autoPlay
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+            />
+          )}
         </div>
         <h2 className="text-3xl font-bold text-center mb-2 drop-shadow-lg text-sky-700">
-          {track.display_title}
+          {podcast.display_title}
         </h2>
         <CollapseAbleDescription />
-        <audio
-          ref={audioRef}
-          src={track.file}
-          preload="metadata"
-          className="w-full"
-          autoPlay
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-        />
         <div className="flex items-center justify-between w-full mb-2 mt-4">
           <span className="text-sm text-gray-500">
             {formatTime(currentTime)}
@@ -150,7 +189,7 @@ const PodcastPlayer: React.FC = () => {
             onChange={(e) => {
               const val = Number(e.target.value);
               setCurrentTime(val);
-              if (audioRef.current) audioRef.current.currentTime = val;
+              if (videoRef.current) videoRef.current.currentTime = val;
             }}
             className="flex-1 mx-2 accent-sky-500"
           />
@@ -185,7 +224,7 @@ const PodcastPlayer: React.FC = () => {
                 <rect x="14" y="5" width="4" height="14" />
               </svg>
             ) : (
-              <svg width="32" height="32" fill="black " viewBox="0 0 24 24">
+              <svg width="32" height="32" fill="black" viewBox="0 0 24 24">
                 <polygon points="5,3 19,12 5,21" />
               </svg>
             )}
@@ -245,17 +284,36 @@ const PodcastPlayer: React.FC = () => {
             </svg>
           </button> */}
           <LikeButton
-            type_of_item={track.category_id}
-            item_id={track.id}
-            isLiked={track.favourite || false}
+            type_of_item={podcast.category_id}
+            item_id={podcast.id}
+            isLiked={podcast.favourite || false}
             refetch={refetch}
           />
         </div>
         {/* Buy Now Button (only if not subscribed) */}
-        {!track.subscription && <SubscribeNowButton />}
+        {!podcast?.subscription && <SubscribeNowButton />}
+        {/* Buy Success Modal */}
+        {/* {showBuySuccess && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+            <div className="bg-white rounded-2xl p-8 flex flex-col items-center shadow-xl">
+              <svg width="48" height="48" fill="#22c55e" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e" opacity="0.15"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#22c55e" strokeWidth="2" fill="none"/></svg>
+              <div className="text-2xl font-bold text-emerald-600 mt-4 mb-2">Success!</div>
+              <div className="text-gray-700 mb-4">Thanks for buying.</div>
+              <button
+                className="px-6 py-2 rounded-full bg-sky-500 text-white font-bold shadow hover:bg-sky-600 transition"
+                onClick={() => {
+                  setShowBuySuccess(false);
+                  window.location.reload();
+                }}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )} */}
         {showAlert && (
           <div className="mt-8 p-4 bg-sky-900/80 text-white rounded-2xl text-center shadow-xl">
-            You can only listen to 15 seconds of this podcast.
+            You can only watch 15 seconds of this video.
             <br />
             Subscribe for full access.
             <button
