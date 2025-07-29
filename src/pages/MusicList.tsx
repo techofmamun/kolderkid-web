@@ -51,7 +51,7 @@ const MusicList: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (
           <Link
-            to={`/music/${item.id}`}
+            to={`/musics/${item.id}`}
             key={item.id}
             className="bg-white/50 rounded-lg shadow p-4 flex flex-col items-center hover:scale-105 transition"
           >

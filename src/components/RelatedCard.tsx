@@ -21,7 +21,7 @@ const RelatedCard: React.FC<{ track: RelatedTrack }> = ({ track }) => {
   const handleClick = () => {
     switch (track.category_id) {
       case 1:
-        navigate(`/misics/${track.id}`);
+        navigate(`/musics/${track.id}`);
         break;
       case 2:
         navigate(`/videos/${track.id}`);
