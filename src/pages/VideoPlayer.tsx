@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
 import RelatedSection from "../components/RelatedCard";
 import SubscribeNowButton from "../components/SubscribeNowButton";
-import { useGetMediaDetailsQuery, useGetVideosQuery } from "../services/api";
+import { useGetItemsQuery, useGetMediaDetailsQuery } from "../services/api";
 import LikeButton from "./LikeButton";
 
 const VideoPlayer: React.FC = () => {
@@ -79,9 +79,11 @@ const VideoPlayer: React.FC = () => {
       vid.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, [video?.subscription, videoRef]);
-  const { data: related = [], isLoading: relatedLoading } = useGetVideosQuery({
+  const { data, isLoading: relatedLoading } = useGetItemsQuery({
     page: 1,
+    filter: 2,
   });
+  const related = data?.data || [];
 
   if (isLoading) {
     return (

@@ -1,28 +1,23 @@
 import React, { useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
-import { useGetPodcastsQuery, type MediaItem } from "../services/api";
+import { useGetItemsQuery } from "../services/api";
 
 const PodcastsList: React.FC = () => {
   const [page, setPage] = React.useState(1);
-  const [items, setItems] = React.useState<MediaItem[]>([]);
-  const { data, isFetching } = useGetPodcastsQuery({ page });
+  const { data, isFetching } = useGetItemsQuery({ page, filter: 3 });
   const loader = useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (data && Array.isArray(data)) {
-      setItems((prev) => (page === 1 ? data : [...prev, ...data]));
-    }
-  }, [data, page]);
+  const items = data?.data || [];
+  const isLastPage = !data || data.newItemsCount === 0;
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
-      if (target.isIntersecting && !isFetching && data && data.length > 0) {
+      if (target.isIntersecting && !isFetching) {
         setPage((prev) => prev + 1);
       }
     },
-    [isFetching, data]
+    [isFetching]
   );
 
   React.useEffect(() => {
@@ -33,11 +28,13 @@ const PodcastsList: React.FC = () => {
     };
     const observer = new IntersectionObserver(handleObserver, option);
     if (loader.current) observer.observe(loader.current);
+    if (isLastPage) {
+      observer.disconnect();
+    }
     return () => {
       if (loader.current) observer.unobserve(loader.current);
     };
-  }, [handleObserver]);
-
+  }, [handleObserver, isLastPage]);
   return (
     <PageContainer>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

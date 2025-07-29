@@ -81,7 +81,7 @@ const RelatedSection = ({
       ) : related.length === 0 ? (
         <div className="text-center text-gray-400">Not available now.</div>
       ) : (
-        <div className="flex gap-6 overflow-x-auto pb-2 hide-scrollbar">
+        <div className="flex gap-6 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-sky-700 scrollbar-track-gray-200">
           {related.map((item) => (
             <RelatedCard key={item.id} track={item} />
           ))}

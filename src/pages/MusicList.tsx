@@ -1,28 +1,26 @@
 import React, { useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
-import { useGetMusicQuery, type MediaItem } from "../services/api";
+import { useGetItemsQuery } from "../services/api";
 
 const MusicList: React.FC = () => {
   const [page, setPage] = React.useState(1);
-  const [items, setItems] = React.useState<MediaItem[]>([]);
-  const { data, isFetching, error } = useGetMusicQuery({ page });
   const loader = useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (data && Array.isArray(data)) {
-      setItems((prev) => (page === 1 ? data : [...prev, ...data]));
-    }
-  }, [data, page]);
+  const { data, isFetching, error } = useGetItemsQuery({
+    page,
+    filter: 1,
+  });
+  const items = data?.data || [];
+  const isLastPage = !data || data.newItemsCount === 0;
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
-      if (target.isIntersecting && !isFetching && data && data.length > 0) {
+      if (target.isIntersecting && !isFetching) {
         setPage((prev) => prev + 1);
       }
     },
-    [isFetching, data]
+    [isFetching]
   );
 
   React.useEffect(() => {
@@ -33,10 +31,13 @@ const MusicList: React.FC = () => {
     };
     const observer = new IntersectionObserver(handleObserver, option);
     if (loader.current) observer.observe(loader.current);
+    if (isLastPage) {
+      observer.disconnect();
+    }
     return () => {
       if (loader.current) observer.unobserve(loader.current);
     };
-  }, [handleObserver]);
+  }, [handleObserver, isLastPage]);
 
   if (error)
     return (
@@ -47,7 +48,6 @@ const MusicList: React.FC = () => {
 
   return (
     <PageContainer>
-      {/* <h1 className="text-2xl font-bold mb-6 text-sky-800">All Music</h1> */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {items.map((item) => (
           <Link
@@ -69,9 +69,15 @@ const MusicList: React.FC = () => {
           </Link>
         ))}
       </div>
-      <div ref={loader} className="h-8 flex items-center justify-center">
-        {isFetching && <span className="text-sky-600">Loading more...</span>}
-      </div>
+      {isLastPage ? (
+        <div className="h-8 flex items-center justify-center">
+          <span className="text-sky-600">End of list</span>
+        </div>
+      ) : (
+        <div ref={loader} className="h-8 flex items-center justify-center">
+          {isFetching && <span className="text-sky-600">Loading more...</span>}
+        </div>
+      )}
     </PageContainer>
   );
 };

@@ -3,14 +3,11 @@ import { useNavigate } from "react-router-dom";
 import HorizontalScrollSection from "../components/HorizontalScrollSection";
 import PageContainer from "../components/PageContainer";
 import {
-  useGetApparelsQuery,
   useGetBannerQuery,
-  useGetMusicQuery,
-  useGetPodcastsQuery,
-  useGetVideosQuery,
+  useGetItemsQuery,
   useLazyGetMediaDetailsQuery,
   type Banner,
-  type Item,
+  type Item
 } from "../services/api";
 
 // Reusable card for all item types
@@ -176,11 +173,15 @@ const CarouselBanner = ({
 };
 
 const Home: React.FC = () => {
-  const { data: musicData } = useGetMusicQuery({});
-  const { data: videoData } = useGetVideosQuery({});
-  const { data: podcastData } = useGetPodcastsQuery({});
-  const { data: apparelsData } = useGetApparelsQuery({});
+  const { data: music } = useGetItemsQuery({ filter: 1 });
+  const { data: video } = useGetItemsQuery({ filter: 2 });
+  const { data: podcast } = useGetItemsQuery({ filter: 3 });
+  const { data: apparels } = useGetItemsQuery({ filter: 4 });
   const { data: banners, isLoading: loadingBanner } = useGetBannerQuery();
+  const musicData = music?.data || [];
+  const videoData = video?.data || [];
+  const podcastData = podcast?.data || [];
+  const apparelsData = apparels?.data || [];
   return (
     <PageContainer>
       {/* Banner */}

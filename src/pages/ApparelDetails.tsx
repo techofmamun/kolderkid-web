@@ -22,8 +22,8 @@ const ApparelDetails: React.FC = () => {
   const navigate = useNavigate();
   const apparel = data;
   // Fetch related apparels (excluding current)
-  const { data: relatedApparels = [], isLoading: relatedLoading } =
-    useGetApparelsQuery({});
+  const { data: related, isLoading: relatedLoading } = useGetApparelsQuery({});
+  const relatedApparels = related?.data || [];
   const filteredRelated = relatedApparels
     .filter((item) => item.id !== apparel?.id)
     .slice(0, 10);
@@ -163,7 +163,7 @@ const ApparelDetails: React.FC = () => {
         {relatedLoading ? (
           <div className="text-sky-600">Loading...</div>
         ) : filteredRelated.length ? (
-          <div className="flex gap-6 overflow-x-auto pb-2 hide-scrollbar px-4">
+          <div className="flex gap-6 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-sky-700 scrollbar-track-gray-200px-4">
             {filteredRelated.map((item) => (
               <RelatedApparelCard
                 key={item.id}

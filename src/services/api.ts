@@ -90,7 +90,18 @@ export interface Item {
   product_description?: string;
   image?: string[];
 }
-
+export interface ItemsResponse {
+  data: MediaItem[];
+  Total_pages: number;
+  message?: string;
+  status?: boolean;
+}
+export interface ApparelResponse {
+  data: ApparelItem[];
+  Total_pages: number;
+  message?: string;
+  status?: boolean;
+}
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -134,10 +145,45 @@ export const api = createApi({
       transformResponse: (response: { data: Banner[] }) =>
         response.data || null,
     }),
-    getMusic: builder.query<MediaItem[], { page?: number }>({
-      query: ({ page = 1 } = {}) => `getitems?filter=1&page=${page}`,
-      transformResponse: (response: { data: MediaItem[] }) =>
-        response.data || [],
+    getItems: builder.query<
+      {
+        data: MediaItem[];
+        current_page: number;
+        per_page: number;
+        total_pages: number;
+        newItemsCount?: number;
+      },
+      { page?: number; filter?: number }
+    >({
+      query: ({ page = 1, filter = 1 } = {}) =>
+        `getitems?filter=${filter}&page=${page}`,
+      transformResponse: (response: ItemsResponse, _meta, arg) => {
+        const page = arg?.page || 1;
+        return {
+          data: response.data || [],
+          current_page: page,
+          per_page: 10,
+          total_pages: response.Total_pages || 1,
+        };
+      },
+      serializeQueryArgs: ({ queryArgs }) => {
+        const newQueryArgs = { ...queryArgs };
+        if (newQueryArgs?.page) delete newQueryArgs.page;
+        return newQueryArgs;
+      },
+      merge: (currentCache, newItems) => {
+        if (!currentCache || newItems.current_page === 1) {
+          return newItems;
+        }
+        return {
+          ...newItems,
+          data: [...(currentCache.data || []), ...(newItems.data || [])],
+          newItemsCount: newItems.data.length,
+        };
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.page !== previousArg?.page;
+      },
     }),
     getMediaDetails: builder.query<
       MediaItem | null,
@@ -158,43 +204,49 @@ export const api = createApi({
         body: { type_of_item, item_id },
       }),
     }),
-    downloadAudio: builder.mutation<
-      { status: boolean; message: string },
-      { id: number }
-    >({
-      query: ({ id }) => ({
-        url: "download",
-        method: "POST",
-        body: { items_id: id },
-      }),
-    }),
-    getVideos: builder.query<MediaItem[], { page?: number }>({
-      query: ({ page = 1 } = {}) => `getitems?filter=2&page=${page}`,
-      transformResponse: (response: { data: MediaItem[] }) =>
-        response.data || [],
-    }),
-    getPodcasts: builder.query<MediaItem[], { page?: number }>({
-      query: ({ page = 1 } = {}) => `getitems?filter=3&page=${page}`,
-      transformResponse: (response: { data: MediaItem[] }) =>
-        response.data || [],
-    }),
-
     getApparelById: builder.query<ApparelItem | null, string>({
       query: (id) => `getitemsdetails?filter=4&items_id=${id}`,
       transformResponse: (response: { data: ApparelItem[] }) =>
         response.data?.[0] || null,
     }),
-    getApparels: builder.query<ApparelItem[], { page?: number }>({
+    getApparels: builder.query<
+      {
+        data: ApparelItem[];
+        current_page: number;
+        per_page: number;
+        total_pages: number;
+        newItemsCount?: number;
+      },
+      { page?: number }
+    >({
       query: ({ page = 1 } = {}) => `getitems?filter=4&page=${page}`,
-      transformResponse: (response: { data: ApparelItem[] }) =>
-        response.data || [],
-    }),
-
-    // Related audios endpoint (example: returns similar items by category or artist)
-    getRelatedAudios: builder.query<MediaItem[], { id: number }>({
-      query: ({ id }) => `getrelateditems?items_id=${id}`,
-      transformResponse: (response: { data: MediaItem[] }) =>
-        response.data || [],
+      transformResponse: (response: ApparelResponse, _meta, arg) => {
+        const page = arg?.page || 1;
+        return {
+          data: response.data || [],
+          current_page: page,
+          per_page: 10,
+          total_pages: response.Total_pages || 1,
+        };
+      },
+      serializeQueryArgs: ({ queryArgs }) => {
+        const newQueryArgs = { ...queryArgs };
+        if (newQueryArgs?.page) delete newQueryArgs.page;
+        return newQueryArgs;
+      },
+      merge: (currentCache, newItems) => {
+        if (!currentCache || newItems.current_page === 1) {
+          return newItems;
+        }
+        return {
+          ...newItems,
+          data: [...(currentCache.data || []), ...(newItems.data || [])],
+          newItemsCount: newItems.data.length,
+        };
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.page !== previousArg?.page;
+      },
     }),
 
     subscribe: builder.mutation<
@@ -281,16 +333,12 @@ export const {
   useRegisterMutation,
   useGetProfileQuery,
   useGetBannerQuery,
-  useGetMusicQuery,
-  useGetVideosQuery,
-  useGetPodcastsQuery,
+  useGetItemsQuery,
   useGetApparelsQuery,
   useGetApparelByIdQuery,
   useGetMediaDetailsQuery,
   useLazyGetMediaDetailsQuery,
   useLikeMutation,
-  useDownloadAudioMutation,
-  useGetRelatedAudiosQuery,
   useSubscribeMutation,
   useBuyApparelMutation,
   useGetCartQuery,

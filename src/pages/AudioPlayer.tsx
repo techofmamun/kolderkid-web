@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
 import RelatedSection from "../components/RelatedCard";
 import SubscribeNowButton from "../components/SubscribeNowButton";
-import { useGetMediaDetailsQuery, useGetMusicQuery } from "../services/api";
+import { useGetItemsQuery, useGetMediaDetailsQuery } from "../services/api";
 import LikeButton from "./LikeButton";
 
 const AudioPlayer: React.FC = () => {
@@ -25,9 +25,11 @@ const AudioPlayer: React.FC = () => {
     id: Number(id),
   });
   // Fetch related audios (using music query)
-  const { data: related = [], isLoading: relatedLoading } = useGetMusicQuery({
+  const { data, isLoading: relatedLoading } = useGetItemsQuery({
     page: 1,
+    filter: 1,
   });
+  const related = data?.data || [];
 
   useEffect(() => {
     if (!audioRef.current) return;

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PageContainer from "../components/PageContainer";
 import RelatedSection from "../components/RelatedCard";
 import SubscribeNowButton from "../components/SubscribeNowButton";
-import { useGetMediaDetailsQuery, useGetPodcastsQuery } from "../services/api";
+import { useGetItemsQuery, useGetMediaDetailsQuery } from "../services/api";
 import LikeButton from "./LikeButton";
 
 const PodcastPlayer: React.FC = () => {
@@ -23,11 +23,11 @@ const PodcastPlayer: React.FC = () => {
     id: Number(id),
   });
   // Fetch related audios (using podcasts query)
-  const { data: related = [], isLoading: relatedLoading } = useGetPodcastsQuery(
-    {
-      page: 1,
-    }
-  );
+  const { data, isLoading: relatedLoading } = useGetItemsQuery({
+    page: 1,
+    filter: 3,
+  });
+  const related = data?.data || [];
 
   useEffect(() => {
     if (!audioRef.current) return;
