@@ -271,7 +271,7 @@ const PodcastPlayer: React.FC = () => {
       <RelatedSection
         related={related}
         relatedLoading={relatedLoading}
-        title={"Related Tracks"}
+        title={"Related Podcasts"}
       />
     </PageContainer>
   );

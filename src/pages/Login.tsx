@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { useLoginMutation } from "../services/api";
-import { useAppDispatch } from "../hooks";
 import { setToken } from "../features/authSlice";
+import { useAppDispatch } from "../hooks";
+import { useLoginMutation } from "../services/api";
 
 const Login: React.FC = () => {
   const [error, setError] = useState("");
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
     try {
       const res = await login({ email, password }).unwrap();
       dispatch(setToken(res.data));
-      navigate("/"); // Redirect to home after successful login
+      navigate("/", { replace: true });
     } catch (err: any) {
       setError(err?.data?.message || "Login failed");
     }

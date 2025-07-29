@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Navigate,
   Outlet,
@@ -29,7 +29,7 @@ import Register from "./pages/Register";
 import Terms from "./pages/Terms";
 import VideoPlayer from "./pages/VideoPlayer";
 import VideosList from "./pages/VideosList";
-import { store, type RootState } from "./store";
+import { type RootState } from "./store";
 
 // Auth guard for protected routes using Redux state
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -46,8 +46,10 @@ const ProtectedLayout: React.FC = () => (
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-y-auto h-screen">
         <Breadcrumb />
-        <main className="flex-1 h-full overflow-auto ">
-          <Outlet />
+        <main className="flex-1 h-full overflow-auto pb-[70px] sm:pb-0">
+          <div className="min-h-screen">
+            <Outlet />
+          </div>
           <Footer />
         </main>
       </div>
@@ -62,7 +64,8 @@ const PublicLayout: React.FC = () => (
     </main>
   </div>
 );
-const AppRoutes: React.FC = () => {
+
+const App: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
   return (
     <Router>
@@ -116,11 +119,5 @@ const AppRoutes: React.FC = () => {
     </Router>
   );
 };
-
-const App: React.FC = () => (
-  <Provider store={store}>
-    <AppRoutes />
-  </Provider>
-);
 
 export default App;

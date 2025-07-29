@@ -27,7 +27,7 @@ const Register: React.FC = () => {
         password,
       }).unwrap();
       dispatch(setToken(res.data));
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err: any) {
       setError(err?.data?.message || "Registration failed");
     }
