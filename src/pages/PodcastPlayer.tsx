@@ -13,6 +13,7 @@ const PodcastPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
+  const [isPlayerLoading, setIsPlayerLoading] = useState(true);
   // Fetch audio details from API
   const {
     data: podcast,
@@ -34,11 +35,15 @@ const PodcastPlayer: React.FC = () => {
     const vid = playerRef.current;
     const updateTime = () => setCurrentTime(vid.currentTime);
     const updateDuration = () => setDuration(vid.duration);
+    const handleLoadedData = () => setIsPlayerLoading(false);
+    setIsPlayerLoading(true);
     vid.addEventListener("timeupdate", updateTime);
     vid.addEventListener("loadedmetadata", updateDuration);
+    vid.addEventListener("loadeddata", handleLoadedData);
     return () => {
       vid.removeEventListener("timeupdate", updateTime);
       vid.removeEventListener("loadedmetadata", updateDuration);
+      vid.removeEventListener("loadeddata", handleLoadedData);
       // Pause video on unmount
       vid.pause();
     };
@@ -254,10 +259,26 @@ const PodcastPlayer: React.FC = () => {
           </button>
           <button
             onClick={handlePlayPause}
-            className="bg-sky-500 rounded-full p-4 shadow-2xl hover:bg-sky-600 transition"
+            className="bg-sky-500 rounded-full p-4 shadow-2xl hover:bg-sky-600 transition flex items-center justify-center"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
-            {isPlaying ? (
+            {isPlayerLoading ? (
+              <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="white"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="#fff"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+            ) : isPlaying ? (
               <svg width="32" height="32" fill="black" viewBox="0 0 24 24">
                 <rect x="6" y="5" width="4" height="14" />
                 <rect x="14" y="5" width="4" height="14" />
