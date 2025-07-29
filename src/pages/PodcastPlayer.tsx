@@ -8,7 +8,7 @@ import LikeButton from "./LikeButton";
 
 const PodcastPlayer: React.FC = () => {
   const { id } = useParams();
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const playerRef = useRef<HTMLAudioElement | HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -29,27 +29,64 @@ const PodcastPlayer: React.FC = () => {
   });
   const related = data?.data || [];
   const filteredRelated = related.filter((item) => item.id !== podcast?.id);
-  const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
-    if (!audioRef.current) return;
-    const audio = audioRef.current;
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
-    audio.addEventListener("timeupdate", updateTime);
-    audio.addEventListener("loadedmetadata", updateDuration);
+    if (!playerRef.current) return;
+    const vid = playerRef.current;
+    const updateTime = () => setCurrentTime(vid.currentTime);
+    const updateDuration = () => setDuration(vid.duration);
+    vid.addEventListener("timeupdate", updateTime);
+    vid.addEventListener("loadedmetadata", updateDuration);
     return () => {
-      audio.removeEventListener("timeupdate", updateTime);
-      audio.removeEventListener("loadedmetadata", updateDuration);
+      vid.removeEventListener("timeupdate", updateTime);
+      vid.removeEventListener("loadedmetadata", updateDuration);
+      // Pause video on unmount
+      vid.pause();
     };
   }, [podcast]);
 
   useEffect(() => {
     if (!podcast?.subscription && isPlaying && currentTime >= 15) {
-      audioRef.current?.pause();
+      playerRef.current?.pause();
       setIsPlaying(false);
       setShowAlert(true);
     }
   }, [currentTime, isPlaying, podcast]);
+
+  useEffect(() => {
+    const vid = playerRef.current;
+    if (!vid || podcast?.subscription) return;
+    const handleTimeUpdate = () => {
+      if (vid.currentTime >= 15) {
+        vid.pause();
+        // Exit fullscreen if in fullscreen mode
+        if (document.fullscreenElement === vid) {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (
+            (document as Document & { webkitExitFullscreen?: () => void })
+              .webkitExitFullscreen
+          ) {
+            (
+              document as Document & { webkitExitFullscreen: () => void }
+            ).webkitExitFullscreen();
+          } else if (
+            (document as Document & { msExitFullscreen?: () => void })
+              .msExitFullscreen
+          ) {
+            (
+              document as Document & { msExitFullscreen: () => void }
+            ).msExitFullscreen();
+          }
+        }
+        setIsPlaying(false);
+        setShowAlert(true);
+      }
+    };
+    vid.addEventListener("timeupdate", handleTimeUpdate);
+    return () => {
+      vid.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, [podcast?.subscription, playerRef]);
 
   if (isLoading) {
     return (
@@ -58,21 +95,21 @@ const PodcastPlayer: React.FC = () => {
   }
 
   const handlePlayPause = () => {
-    if (!audioRef.current) return;
+    if (!playerRef.current) return;
     if (isPlaying) {
-      audioRef.current.pause();
+      playerRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      playerRef.current.play();
       setIsPlaying(true);
     }
   };
 
   const handleSkip = (sec: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = Math.max(
+    if (playerRef.current) {
+      playerRef.current.currentTime = Math.max(
         0,
-        Math.min(duration, audioRef.current.currentTime + sec)
+        Math.min(duration, playerRef.current.currentTime + sec)
       );
     }
   };
@@ -122,7 +159,8 @@ const PodcastPlayer: React.FC = () => {
         <div className="rounded-3xl overflow-hidden mb-6 shadow-xl bg-white/10 backdrop-blur-lg border border-white/20">
           {podcast.fileType === "video" ? (
             <video
-              ref={videoRef}
+              // @ts-expect-error ignore
+              ref={playerRef}
               src={podcast.file}
               poster={podcast.thumbnail}
               className="w-full h-96 object-cover bg-black"
@@ -130,7 +168,7 @@ const PodcastPlayer: React.FC = () => {
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
               onDoubleClick={() => {
-                const vid = videoRef.current;
+                const vid = playerRef.current;
                 if (vid) {
                   if (vid.requestFullscreen) {
                     vid.requestFullscreen();
@@ -164,7 +202,7 @@ const PodcastPlayer: React.FC = () => {
             />
           ) : (
             <audio
-              ref={audioRef}
+              ref={playerRef}
               src={podcast.file}
               preload="metadata"
               className="w-full"
@@ -190,7 +228,7 @@ const PodcastPlayer: React.FC = () => {
             onChange={(e) => {
               const val = Number(e.target.value);
               setCurrentTime(val);
-              if (videoRef.current) videoRef.current.currentTime = val;
+              if (playerRef.current) playerRef.current.currentTime = val;
             }}
             className="flex-1 mx-2 accent-sky-500"
           />
