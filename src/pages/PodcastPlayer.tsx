@@ -263,7 +263,13 @@ const PodcastPlayer: React.FC = () => {
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlayerLoading ? (
-              <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <svg
+                className="animate-spin"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
                 <circle
                   className="opacity-25"
                   cx="12"
@@ -326,23 +332,6 @@ const PodcastPlayer: React.FC = () => {
               <path d="M12 2v14" />
             </svg>
           </button>
-          {/* <button
-            onClick={handleDownload}
-            aria-label="Download"
-            className="hover:text-sky-400 transition"
-          >
-            <svg
-              width="28"
-              height="28"
-              fill="none"
-              stroke="black"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 5v14" />
-              <path d="M19 12l-7 7-7-7" />
-            </svg>
-          </button> */}
           <LikeButton
             type_of_item={podcast.category_id}
             item_id={podcast.id}
@@ -352,25 +341,6 @@ const PodcastPlayer: React.FC = () => {
         </div>
         {/* Buy Now Button (only if not subscribed) */}
         {!podcast?.subscription && <SubscribeNowButton />}
-        {/* Buy Success Modal */}
-        {/* {showBuySuccess && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-            <div className="bg-white rounded-2xl p-8 flex flex-col items-center shadow-xl">
-              <svg width="48" height="48" fill="#22c55e" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e" opacity="0.15"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#22c55e" strokeWidth="2" fill="none"/></svg>
-              <div className="text-2xl font-bold text-emerald-600 mt-4 mb-2">Success!</div>
-              <div className="text-gray-700 mb-4">Thanks for buying.</div>
-              <button
-                className="px-6 py-2 rounded-full bg-sky-500 text-white font-bold shadow hover:bg-sky-600 transition"
-                onClick={() => {
-                  setShowBuySuccess(false);
-                  window.location.reload();
-                }}
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        )} */}
         {showAlert && (
           <div className="mt-8 p-4 bg-sky-900/80 text-white rounded-2xl text-center shadow-xl">
             You can only watch 15 seconds of this video.
