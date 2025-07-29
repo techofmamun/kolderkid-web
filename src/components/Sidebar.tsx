@@ -7,8 +7,7 @@ import {
   FaHeart,
   FaHistory,
   FaShoppingBag,
-  FaSignOutAlt,
-  FaUserCircle,
+  FaUserCircle
 } from "react-icons/fa";
 
 const navItems = [
@@ -37,11 +36,6 @@ const navItems = [
     name: "Favourites",
     path: "/favourites",
     icon: <FaHeart className="text-sky-400 text-xl mr-3" />,
-  },
-  {
-    name: "Logout",
-    path: "/logout",
-    icon: <FaSignOutAlt className="text-sky-400 text-xl mr-3" />,
   },
 ];
 
