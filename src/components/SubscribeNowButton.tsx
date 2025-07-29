@@ -8,14 +8,21 @@ const SubscribeNowButton = () => {
   const paymentPollRef = useRef<number | null>(null);
 
   const handleSubscribe = async () => {
+    // Open a blank window synchronously to avoid popup blockers
+    paymentWindowRef.current = window.open("about:blank", "_blank");
     try {
       const res = await subscribe({ product_id: 1, type_of_item: 1 }).unwrap();
-      if (res.data?.payment_url) {
-        paymentWindowRef.current = window.open(res.data.payment_url, "_blank");
+      if (res.data?.payment_url && paymentWindowRef.current) {
+        paymentWindowRef.current.location.href = res.data.payment_url;
+      } else if (paymentWindowRef.current) {
+        paymentWindowRef.current.close();
       }
     } catch (error) {
       console.error("Subscription error:", error);
       setFeedback("Failed to initiate purchase.");
+      if (paymentWindowRef.current) {
+        paymentWindowRef.current.close();
+      }
     }
   };
   useEffect(() => {
