@@ -1,16 +1,14 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../features/authSlice";
 import { useAppDispatch } from "../hooks";
 import { api } from "../services/api";
 import logo from "/assets/images/kolderkid-logo.png";
 // import ProfileSidebarSection from "./ProfileSidebarSection";
 import { BiHome } from "react-icons/bi";
 import {
-  FaFileAlt,
   FaHeart,
   FaHistory,
-  FaInfoCircle,
-  FaShieldAlt,
   FaShoppingBag,
   FaSignOutAlt,
   FaUserCircle
@@ -43,31 +41,6 @@ const navItems = [
     path: "/favourites",
     icon: <FaHeart className="text-sky-400 text-xl mr-3" />,
   },
-  // {
-  //   name: "Downloads",
-  //   path: "/downloads",
-  //   icon: <FaDownload className="text-sky-400 text-xl mr-3" />,
-  // },
-  {
-    name: "Privacy Policy",
-    path: "/privacy-policy",
-    icon: <FaShieldAlt className="text-sky-400 text-xl mr-3" />,
-  },
-  {
-    name: "Terms & Condition",
-    path: "/terms",
-    icon: <FaFileAlt className="text-sky-400 text-xl mr-3" />,
-  },
-  {
-    name: "About Us",
-    path: "/about",
-    icon: <FaInfoCircle className="text-sky-400 text-xl mr-3" />,
-  },
-  // {
-  //   name: "Delete Account",
-  //   path: "/delete-account",
-  //   icon: <FaUserTimes className="text-sky-400 text-xl mr-3" />,
-  // },
   {
     name: "Logout",
     path: "/logout",
@@ -82,16 +55,10 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(true);
-
-  // Optionally, close sidebar on route change if desired
-  // React.useEffect(() => {
-  //   setOpen(false);
-  // }, [location.pathname]);
-
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
     if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.clear();
+      dispatch(logout());
       dispatch(api.util.resetApiState());
       navigate("/auth/login", { replace: true });
     }
@@ -206,10 +173,6 @@ const Sidebar: React.FC = () => {
           </ul>
         </nav>
       </div>
-      {/* <div className="w-full flex flex-col items-center px-2 pb-2 box-border">
-        {open && <ProfileSidebarSection />}
-      </div> */}
-      {/* Toggle button: top right when expanded, top center when collapsed */}
       <button
         className={`absolute top-4 z-50 p-2 rounded-md bg-white shadow border border-sky-200 text-sky-500 transition-all duration-300 ${
           open ? "right-2" : "left-1/2 -translate-x-1/2"

@@ -1,19 +1,24 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useRegisterMutation } from "../services/api";
+import { useAppDispatch } from "../hooks";
+import { setToken } from "../features/authSlice";
 
 const Register: React.FC = () => {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [register, { isLoading }] = useRegisterMutation();
-  
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const firstname = formData.get("firstname") as string;
+    const lastname = formData.get("lastname") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
     try {
       const res = await register({
         firstname,
@@ -21,8 +26,8 @@ const Register: React.FC = () => {
         email,
         password,
       }).unwrap();
-      localStorage.setItem("token", res.data);
-      window.location.href = "/";
+      dispatch(setToken(res.data));
+      navigate("/");
     } catch (err: any) {
       setError(err?.data?.message || "Registration failed");
     }
@@ -35,40 +40,37 @@ const Register: React.FC = () => {
       </h2>
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <input
+        name="firstname"
         type="text"
         placeholder="First Name"
-        value={firstname}
-        onChange={(e) => setFirstname(e.target.value)}
         className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-sky-400"
         required
       />
       <input
+        name="lastname"
         type="text"
         placeholder="Last Name"
-        value={lastname}
-        onChange={(e) => setLastname(e.target.value)}
         className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-sky-400"
         required
       />
       <input
+        name="email"
         type="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-sky-400"
         required
       />
       <input
+        name="password"
         type="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
         className="w-full mb-6 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-sky-400"
         required
       />
       <Button
         text={isLoading ? "Registering..." : "Register"}
         className="w-full"
+        isLoading={isLoading}
       />
       <div className="mt-4 text-center">
         <span className="text-sky-700">Already have an account? </span>
