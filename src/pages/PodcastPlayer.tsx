@@ -28,6 +28,7 @@ const PodcastPlayer: React.FC = () => {
     filter: 3,
   });
   const related = data?.data || [];
+  const filteredRelated = related.filter((item) => item.id !== podcast?.id);
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (!audioRef.current) return;
@@ -327,7 +328,7 @@ const PodcastPlayer: React.FC = () => {
       </div>
       {/* Related Section */}
       <RelatedSection
-        related={related}
+        related={filteredRelated}
         relatedLoading={relatedLoading}
         title={"Related Podcasts"}
       />
