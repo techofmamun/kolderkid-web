@@ -12,12 +12,20 @@ const PageContainer: FC<PageContainerProps> = (props) => {
   const pageRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   useLayoutEffect(() => {
-    
+    // Pause all audio and video elements on navigation
+    document.querySelectorAll("audio,video").forEach((el) => {
+      try {
+        (el as HTMLMediaElement).pause();
+        (el as HTMLMediaElement).currentTime = 0;
+      } catch {
+        console.error("Failed to pause media element", el);
+      }
+    });
     if (pageRef.current) {
-      console.log(`Navigated to: ${pathname}`);
+      // console.log(`Navigated to: ${pathname}`);
       pageRef.current.scrollTop = 100; // Scroll to top on route change
     }
-  }, []);
+  }, [pathname]);
   return (
     <div
       ref={pageRef}
