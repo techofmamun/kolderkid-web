@@ -41,16 +41,20 @@ const ApparelDetails: React.FC = () => {
 
   const handleBuyNow = async () => {
     if (!apparel) return;
+    // Open a blank window synchronously to avoid popup blockers
+    paymentWindowRef.current = window.open("about:blank", "_blank");
     try {
       const response = await buyNow({ product_id: apparel.id }).unwrap();
-      if (response.data?.payment_url) {
-        paymentWindowRef.current = window.open(
-          response.data.payment_url,
-          "_blank"
-        );
+      if (response.data?.payment_url && paymentWindowRef.current) {
+        paymentWindowRef.current.location.href = response.data.payment_url;
+      } else if (paymentWindowRef.current) {
+        paymentWindowRef.current.close();
       }
     } catch {
       setFeedback("Failed to initiate purchase.");
+      if (paymentWindowRef.current) {
+        paymentWindowRef.current.close();
+      }
     }
   };
   useEffect(() => {

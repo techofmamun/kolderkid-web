@@ -6,12 +6,12 @@ import { useGetItemsQuery } from "../services/api";
 const MusicList: React.FC = () => {
   const [page, setPage] = React.useState(1);
   const loader = useRef<HTMLDivElement | null>(null);
-  const { data, isFetching, error } = useGetItemsQuery({
+  const { data, isFetching, error, isLoading } = useGetItemsQuery({
     page,
     filter: 1,
   });
   const items = data?.data || [];
-  const isLastPage = !data || data.newItemsCount === 0;
+  const isLastPage = data?.newItemsCount === 0;
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -69,7 +69,11 @@ const MusicList: React.FC = () => {
           </Link>
         ))}
       </div>
-      {isLastPage ? (
+      {isLoading ? (
+        <div className="h-8 flex items-center justify-center">
+          <span className="text-sky-600">Loading...</span>
+        </div>
+      ) : isLastPage ? (
         <div className="h-8 flex items-center justify-center">
           <span className="text-sky-600">End of list</span>
         </div>

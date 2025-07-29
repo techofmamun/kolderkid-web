@@ -7,7 +7,7 @@ import {
   useGetItemsQuery,
   useLazyGetMediaDetailsQuery,
   type Banner,
-  type Item
+  type Item,
 } from "../services/api";
 
 // Reusable card for all item types
@@ -173,10 +173,18 @@ const CarouselBanner = ({
 };
 
 const Home: React.FC = () => {
-  const { data: music } = useGetItemsQuery({ filter: 1 });
-  const { data: video } = useGetItemsQuery({ filter: 2 });
-  const { data: podcast } = useGetItemsQuery({ filter: 3 });
-  const { data: apparels } = useGetItemsQuery({ filter: 4 });
+  const { data: music, isLoading: isLoadingMusic } = useGetItemsQuery({
+    filter: 1,
+  });
+  const { data: video, isLoading: isLoadingVideo } = useGetItemsQuery({
+    filter: 2,
+  });
+  const { data: podcast, isLoading: isLoadingPodcast } = useGetItemsQuery({
+    filter: 3,
+  });
+  const { data: apparels, isLoading: isLoadingApparels } = useGetItemsQuery({
+    filter: 4,
+  });
   const { data: banners, isLoading: loadingBanner } = useGetBannerQuery();
   const musicData = music?.data || [];
   const videoData = video?.data || [];
@@ -193,7 +201,7 @@ const Home: React.FC = () => {
         title="Music"
         seeAllPath="/musics"
         items={musicData || []}
-        loading={!musicData}
+        loading={isLoadingMusic}
         emptyText="No Music"
         renderItem={(item) => <ItemCard item={item} type="musics" filter={1} />}
       />
@@ -202,7 +210,7 @@ const Home: React.FC = () => {
         title="Videos"
         seeAllPath="/videos"
         items={videoData || []}
-        loading={!videoData}
+        loading={isLoadingVideo}
         emptyText="No Videos"
         renderItem={(item) => (
           <ItemCard item={item} type="videos" asLink filter={2} />
@@ -213,7 +221,7 @@ const Home: React.FC = () => {
         title="Apparels"
         seeAllPath="/apparels"
         items={apparelsData || []}
-        loading={!apparelsData}
+        loading={isLoadingApparels}
         emptyText="No Apparels"
         renderItem={(item) => (
           <ItemCard item={item} type="apparels" filter={4} />
@@ -224,7 +232,7 @@ const Home: React.FC = () => {
         title="Podcasts"
         seeAllPath="/podcasts"
         items={podcastData || []}
-        loading={!podcastData}
+        loading={isLoadingPodcast}
         emptyText="No Podcasts"
         renderItem={(item) => (
           <ItemCard item={item} type="podcasts" filter={3} />

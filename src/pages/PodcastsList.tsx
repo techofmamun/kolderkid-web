@@ -5,10 +5,10 @@ import { useGetItemsQuery } from "../services/api";
 
 const PodcastsList: React.FC = () => {
   const [page, setPage] = React.useState(1);
-  const { data, isFetching } = useGetItemsQuery({ page, filter: 3 });
+  const { data, isFetching, isLoading } = useGetItemsQuery({ page, filter: 3 });
   const loader = useRef<HTMLDivElement | null>(null);
   const items = data?.data || [];
-  const isLastPage = !data || data.newItemsCount === 0;
+  const isLastPage = data?.newItemsCount === 0;
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -59,7 +59,21 @@ const PodcastsList: React.FC = () => {
         ))}
       </div>
       <div ref={loader} className="h-8 flex items-center justify-center">
-        {isFetching && <span className="text-sky-600">Loading more...</span>}
+        {isLoading ? (
+          <div className="h-8 flex items-center justify-center">
+            <span className="text-sky-600">Loading...</span>
+          </div>
+        ) : isLastPage ? (
+          <div className="h-8 flex items-center justify-center">
+            <span className="text-sky-600">End of list</span>
+          </div>
+        ) : (
+          <div ref={loader} className="h-8 flex items-center justify-center">
+            {isFetching && (
+              <span className="text-sky-600">Loading more...</span>
+            )}
+          </div>
+        )}
       </div>
     </PageContainer>
   );
